@@ -1,0 +1,11 @@
+[13-Mar-2020 16:33:29 Asia/Kathmandu] PHP Fatal error:  Cannot use isset() on the result of an expression (you can use "null !== expression" instead) in /home1/bmsnep/public_html/bidur/ngd/application/modules/SampatiKarRasid/controllers/SampatiKarRasid.php on line 101
+[21-Aug-2020 02:25:58 America/Chicago] PHP Parse error:  syntax error, unexpected '$root' (T_VARIABLE) in /home4/sagarlamsal/public_html/bidur/application/config/config.php on line 29
+[21-Aug-2020 02:25:58 America/Chicago] PHP Fatal error:  Exception thrown without a stack frame in Unknown on line 0
+[21-Aug-2020 02:25:58 America/Chicago] PHP Parse error:  syntax error, unexpected '$root' (T_VARIABLE) in /home4/sagarlamsal/public_html/bidur/application/config/config.php on line 29
+[21-Aug-2020 02:25:58 America/Chicago] PHP Fatal error:  Exception thrown without a stack frame in Unknown on line 0
+[21-Feb-2021 17:23:45 Asia/Kathmandu] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 8192 bytes) in /home4/sagarlamsal/public_html/bidur/system/database/DB_result.php on line 261
+[21-Feb-2021 17:23:45 Asia/Kathmandu] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 4096 bytes) in /home4/sagarlamsal/public_html/bidur/system/core/Common.php on line 685
+[21-Feb-2021 17:23:56 Asia/Kathmandu] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 8192 bytes) in /home4/sagarlamsal/public_html/bidur/system/database/DB_result.php on line 261
+[21-Feb-2021 17:23:56 Asia/Kathmandu] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 4096 bytes) in /home4/sagarlamsal/public_html/bidur/system/core/Common.php on line 685
+[21-Feb-2021 17:24:53 Asia/Kathmandu] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 8192 bytes) in /home4/sagarlamsal/public_html/bidur/system/database/DB_result.php on line 261
+[21-Feb-2021 17:24:53 Asia/Kathmandu] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 32768 bytes) in /home4/sagarlamsal/public_html/bidur/system/core/Exceptions.php on line 1
