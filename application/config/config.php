@@ -513,7 +513,8 @@ $config['csrf_exclude_uris'] =  array(
 									'RajasowTitle/edit',
 									'LandDetails/veiwLandDescription',
 									'LandDetails/removeKitta',
-									'LandDetails/viewBadarReason'
+									'LandDetails/viewBadarReason',
+									'RajasowTitle/editTopicNo'
 									
 								);
 

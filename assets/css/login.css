@@ -1,0 +1,48 @@
+.login-body {
+    background-color: #1b5693;
+}
+.form-signin {
+    max-width: 490px;
+    margin: 45px auto 0;
+    background: #fff;
+    border-radius: 5px;
+    left: 50px;
+    -webkit-border-radius: 5px;
+}
+
+.form-signin img {
+	height: 100px;
+    margin-top: 10px;
+    margin-left: 192px
+}
+
+.form-signin h2.form-signin-heading {
+    margin: 0;
+    padding: 20px 15px;
+    text-align: center;
+    background: #fff; 
+    border-radius: 5px 5px 0 0;
+    -webkit-border-radius: 5px 5px 0 0;
+    color: #131212;
+    font-size: 18px;
+    text-transform: uppercase;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+}
+.form-signin-heading-text {
+	margin: 0;
+    padding: 20px -2px;
+    text-align: center;
+    background: #fff; 
+    border-radius: 5px 5px 0 0;
+    -webkit-border-radius: 5px 5px 0 0;
+    color: #131212;
+    font-size: 18px;
+    text-transform: uppercase;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+}
+
+/*.form-signin .btn-login {
+	background: #1b5693;
+}*/

@@ -285,6 +285,11 @@ class NagadiRasid extends MX_Controller
                 $topic_details          = array();
                 if(!empty($main_topic)) {
                     foreach ($main_topic as $key => $indexv) {
+                        if($main_title[$key] == 'others') {
+                            $tpn = $this->CommonModel->getWhere('main_topic', array('id' => $main_topic[$key]));
+                        } else {
+                            $tpn = $this->CommonModel->getWhere('sub_topic',array('id' => $main_title[$key]));
+                        }
                         $topic_details[]    = array(
                             'main_topic'    => $main_topic[$key],
                             'sub_topic'     => $sub_topic[$key],
@@ -300,7 +305,8 @@ class NagadiRasid extends MX_Controller
                             'fiscal_year'   => $fiscal_year,
                             'bill_no'       => $bill_no,
                             'added_by'      => $userid,
-                            'added_ward'        => $this->session->userdata('PRJ_USER_WARD'),
+                            'added_ward'    => $this->session->userdata('PRJ_USER_WARD'),
+                            'tpn'           => $tpn['topic_no'],
                         );
                     }
                 }

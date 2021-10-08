@@ -238,4 +238,43 @@ class RajasowTitle extends MX_Controller
             exit('invalid request');
         }
     }
+    //edit topic no in subtile
+    public function editTopicNo() {
+        $id                 = $this->input->post('id');
+        $data['row']         = $this->CommonModel->getDataById('sub_topic',$id);
+        $data['titles']     = $this->CommonModel->getData('rajasow_report_title');
+        $this->load->view('edit_topic_no',$data);
+    }
+
+    public function UpdateTopicNo() {
+        if($this->input->is_ajax_request()) {
+            $id = $this->input->post('id');
+            $this->form_validation->set_rules('topic_no', 'topic_no', 'required');
+            if($this->form_validation->run() == false) {
+                $response = array(
+                    'status'      => 'validation_error',
+                    'message'     => '<div class="alert alert-danger">'.validation_errors().'</div>',
+                );
+                header("Content-type: application/json");
+                echo json_encode($response);
+                exit;
+            }
+            $post_data = array(
+                'topic_no'        => $this->input->post('topic_no'),
+            );
+            $result = $this->CommonModel->UpdateData('sub_topic',$id,$post_data);
+            if($result) {
+                $response = array(
+                    'status'      => 'success',
+                    'data'         => "सफलतापूर्वक सम्मिलित गरियो",
+                    'message'     => 'success'
+                );
+                header("Content-type: application/json");
+                echo json_encode($response);
+                exit;
+            } 
+        } else {
+                exit('no direct script allowed');
+        }
+    }
 }

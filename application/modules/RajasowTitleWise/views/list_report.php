@@ -27,7 +27,18 @@
             <form action ="<?php echo base_url()?>RajasowTitleWise/Search" method="post" class="search_report">
               <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
               <div class="row">
-               <?php if($this->session->userdata('PRJ_USER_WARD') == '0') { ?>
+              <div class="col-md-2">
+                  <div class="form-group">
+                    <select class="form-control dd_select" name="fiscal_year">
+                      <option value="">आर्थिक वर्ष छानुहोस </option>
+                      <?php if(!empty($fiscal_year)) :
+                        foreach($fiscal_year as $fy) :?>
+                          <option value="<?php echo $fy['year']?>"  <?php if($fy['year'] == current_fiscal_year()){ echo 'selected';}?>><?php echo $this->mylibrary->convertedcit($fy['year'])?></option>
+                        <?php endforeach; endif;?>
+                      </select>
+                  </div>
+                </div>
+               <?php if($this->session->userdata('PRJ_USER_ID') == 1) { ?>
                  <div class="col-md-4">
                   <div class="form-group">
                     <select class="form-control dd_select" name="ward">
@@ -90,8 +101,7 @@
                   </tr>
                 </thead>
                 <tbody>
-
-                  <tr>
+                <tr>
                     <td><?php echo $this->mylibrary->convertedcit(1)?></td>
                     <td><?php echo $this->mylibrary->convertedcit(11313)?></td>
                     <td><?php echo 'एकिकृत सम्पती कर'?></td>
@@ -122,81 +132,58 @@
                     <td><?php echo 'भूमि कर / मालपोत'?></td>
                      <?php if($this->session->userdata('PRJ_USER_ID') == 1 ) { ?>
                     <td><?php echo $this->mylibrary->convertedcit($aanumanit_bhumikar['annual_income'])?></td>
-                  <?php  } ?>
-                    <td><?php 
-                      $bhumi_kar_upto_lastmonth = $bhumi_kar_lastmonth['bhumi_total'] + $bhumi_kar_lastmonth['bhumi_bakeyuta'] - $bhumi_kar_lastmonth['malpot'];
-                      echo $this->mylibrary->convertedcit($bhumi_kar_upto_lastmonth)
-                    ?></td>
-                    <td><?php 
-                      $bhumi_kar_currentmonth = $bhumi_kar['bhumi_total'] - $bhumi_kar['malpot'] + $bhumi_kar['bhumi_bakeyuta'];
-                      echo $this->mylibrary->convertedcit($bhumi_kar_currentmonth);
-                    ?></td>
-                    <td><?php
-                          $total_bhumi_kar = $bhumi_kar_upto_lastmonth + $bhumi_kar_currentmonth;
-                          echo $this->mylibrary->convertedcit($total_bhumi_kar);
-                    ?></td>
-                     <?php if($this->session->userdata('PRJ_USER_ID') == 1 ) { ?>
-                    <td><?php $due_bhumikar = $aanumanit_bhumikar['annual_income']-$total_bhumi_kar; echo $this->mylibrary->convertedcit($due_bhumikar);?></td>
-                  <?php } ?>
+                    <?php  } ?>
+                      <td><?php 
+                        $bhumi_kar_upto_lastmonth = $bhumi_kar_lastmonth['bhumi_total'] + $bhumi_kar_lastmonth['bhumi_bakeyuta'] - $bhumi_kar_lastmonth['malpot'];
+                        echo $this->mylibrary->convertedcit($bhumi_kar_upto_lastmonth)
+                      ?></td>
+                      <td><?php 
+                        $bhumi_kar_currentmonth = $bhumi_kar['bhumi_total'] - $bhumi_kar['malpot'] + $bhumi_kar['bhumi_bakeyuta'];
+                        echo $this->mylibrary->convertedcit($bhumi_kar_currentmonth);
+                      ?></td>
+                      <td><?php
+                            $total_bhumi_kar = $bhumi_kar_upto_lastmonth + $bhumi_kar_currentmonth;
+                            echo $this->mylibrary->convertedcit($total_bhumi_kar);
+                      ?></td>
+                      <?php if($this->session->userdata('PRJ_USER_ID') == 1 ) { ?>
+                      <td><?php $due_bhumikar = $aanumanit_bhumikar['annual_income']-$total_bhumi_kar; echo $this->mylibrary->convertedcit($due_bhumikar);?></td>
+                    <?php } ?>
                     
                   </tr>
-
-                <?php if(!empty($report)) :
-                  $i = 3;
-                  $total_anu = 0;
-                  $total_collection_lastmonth = 0;
-                  $total_collection_currentmonth = 0;
-                  $total_due = 0;
-                  $total_collection = 0;
-                  foreach($report as $key => $value) :
-                    $total_anu+= $value['ass_amount'];
-                    $total_collection_lastmonth += $value['upto_last_month'];
-                    $total_collection_currentmonth += $value['current_month_data'];
+                  <?php $i = 3;$totalupto_nagadi0;$totalcurrent_month=0;$total_anumanit=0;$totalcollection=0;$totaldue=0; if(!empty($report)) : foreach($report as $nagadi) : 
+                    $total_anumanit += $nagadi['income_amount'];
+                    $totalupto_nagadi += $nagadi['uptolast_month'];
+                    $totalcurrent_month += $nagadi['current_month'];
+                    $uptototal += $nagadi['uptolast_month'] + $nagadi['current_month'];
+                    $totalcollection += $uptocurrentmonth;
+                    $due_amount = $nagadi['income_amount'] - $nagadi['uptolast_month'] - $nagadi['current_month'];
+                    $totaldue +=$due_amount;  
                   ?>
                     <tr>
                       <td><?php echo $this->mylibrary->convertedcit($i++)?></td>
-                      <td><?php echo $this->mylibrary->convertedcit($value['topic_no'])?></td>
-                      <td><?php echo $value['topic_name']?></td>
-                       <?php if($this->session->userdata('PRJ_USER_ID') == 1 ) { ?>
-                      <td><?php echo $this->mylibrary->convertedcit($value['ass_amount'])?></td>
-                    <?php  } ?>
-                      <td><?php echo !empty($value['upto_last_month'])? $this->mylibrary->convertedcit(round($value['upto_last_month'])):$this->mylibrary->convertedcit(0)?></td>
-                      <td><?php echo !empty($value['current_month_data'])? $this->mylibrary->convertedcit(round($value['current_month_data'])):$this->mylibrary->convertedcit(0)?></td>
-                      <td><?php
-                          $upto = $value['current_month_data'] + $value['upto_last_month']; 
-                          echo $this->mylibrary->convertedcit(round($upto));
-                          $total_collection += $upto;
-                      ?>
-                        
-                      </td>
-                       <?php if($this->session->userdata('PRJ_USER_ID') == 1 ) { ?>
-                      <td><?php
-                          $due = $value['ass_amount'] - $upto; 
-                          echo $this->mylibrary->convertedcit(round($due));
-                          $total_due += $due;
-                        ?>
-                      </td>
-                    <?php } ?>
+                      <td><?php echo $this->mylibrary->convertedcit($nagadi['topic_no'])?></td>
+                      <td><?php echo $nagadi['topic_name']?></td>
+                      <td><?php echo $this->mylibrary->convertedcit(number_format($nagadi['income_amount']))?></td>
+                      <td><?php echo $this->mylibrary->convertedcit(number_format($nagadi['uptolast_month']))?></td>
+                      <td><?php echo $this->mylibrary->convertedcit(number_format($nagadi['current_month']))?></td>
+                      <td><?php $total = $nagadi['uptolast_month'] + $nagadi['current_month'];
+                                
+                      echo $this->mylibrary->convertedcit(number_format($total));?></td>
+                      <td><?php echo $this->mylibrary->convertedcit(number_format($due_amount))?></td>
                     </tr>
-                <?php endforeach; endif;?>
-                 <tr>
-                  <td colspan="3" align="right">जम्मा </td>
-                  <!-- total aanumanit rakam -->
-                   <?php if($this->session->userdata('PRJ_USER_ID') == 1 ) { ?>
-                  <td><?php echo $this->mylibrary->convertedcit($total_anu +$aanumanit_sampatikar['annual_income'] + $aanumanit_bhumikar['annual_income'])?></td>
-                <?php } ?>
-                  <!-- total collection upto last month -->
-                  <td><?php echo $this->mylibrary->convertedcit(round($total_collection_lastmonth + $tsampati_kar_upto_lastmonth + $bhumi_kar_upto_lastmonth))?></td>
-                  <!-- total collection monthly -->
-                  <td><?php echo $this->mylibrary->convertedcit(round($total_collection_currentmonth + $tsampati_kar + $bhumi_kar_currentmonth))?></td>
-                  <!-- total collection upto now -->
-                  <td><?php echo $this->mylibrary->convertedcit(round($total_collection + $total_bhumi_kar + $total_sampati_kar))?></td>
-                  <!-- total due amount -->
-                  <?php if($this->session->userdata('PRJ_USER_ID') == 1 ) { ?>
-                  <td><?php echo $this->mylibrary->convertedcit(round($total_due+$due_bhumikar+$due_sampati)) ?></td>
-                <?php } ?>
-                </tr>
-              </tbody>
+                  <?php endforeach; endif;?>
+                  <tr>
+                    <td colspan="3" align="right">जम्मा </td>
+                    <td><?php echo $this->mylibrary->convertedcit($total_anumanit)?></td>
+                    <!-- total upto last month -->
+                    <td><?php $total_upto_last_month = $tsampati_kar_upto_lastmonth + $bhumi_kar_upto_lastmonth + $totalupto_nagadi; echo $this->mylibrary->convertedcit($total_upto_last_month); ?> </td>
+                    <td><?php $total_current_month = $tsampati_kar + $bhumi_kar_currentmonth + $totalcurrent_month; echo $this->mylibrary->convertedcit(number_format($total_current_month)); ?> </td>
+
+                    <td><?php $stotal = $total_upto_last_month + $total_current_month  ; echo $this->mylibrary->convertedcit(number_format($stotal)); ?> </td>
+
+                    <td><?php echo $this->mylibrary->convertedcit($totaldue); ?> </td>
+                  </tr>
+                </tbody>
               </table>
             </div>
           </div>
@@ -209,7 +196,7 @@
 
  <script type="text/javascript" src="<?php echo base_url('assets/nepali_datepicker/nepali.datepicker.v2.2.min.js')?>"></script>
  <script type="text/javascript" src="<?php echo base_url()?>assets/assets/select2/js/select2.min.js"></script>
- <script type="text/javascript" src="<?php echo base_url()?>assets/js/searchjs.js"></script>
+ <script type="text/javascript" src="<?php echo base_url()?>assets/js/search.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     $('.dd_select').select2();

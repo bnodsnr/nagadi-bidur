@@ -31,9 +31,9 @@
             <table  class="table table-inbox table-bordered table-striped">
               <thead style="background: #1b5693; color:#fff">
                 <tr>
-                  <th text-aligh="right">#</th> 
-                  <th> आम्दानी शिर्षक</th>
+                  <th text-aligh="right">#</th>
                   <th> शिर्षक नम्बर </th>
+                  <th> आम्दानी शिर्षक</th>
                   <th> आनुमनित रकम </th>
                   <th> </th>
                 </tr>
@@ -47,14 +47,15 @@
                   ?>
                     <tr class="gradeX">
                       <td><?php echo $this->mylibrary->convertedcit($i++)?></td>
-                      <td><?php echo $this->mylibrary->convertedcit($value['topic_name'])?></td>
                       <td><a href="<?php echo base_url()?>RajasowTitle/View/<?php echo $value['topic_id']?>"><?php echo $this->mylibrary->convertedcit($value['topic_id'])?></a></td>
+                      <td><?php echo $this->mylibrary->convertedcit($value['topic_name'])?></td>
                       <td><?php echo $this->mylibrary->convertedcit(number_format($value['annual_income']))?></td>
                       
-                   <?php if($this->authlibrary->HasModulePermission('RAJASOW-TITLE', "EDIT") || $this->authlibrary->HasModulePermission('RAJASOW-TITLE', "DELETE") ) { ?>
+                      <?php if($this->authlibrary->HasModulePermission('RAJASOW-TITLE', "EDIT") || $this->authlibrary->HasModulePermission('RAJASOW-TITLE', "DELETE") ) { ?>
                         <td class="center hidden-phone">
                           <?php if($this->authlibrary->HasModulePermission('RAJASOW-TITLE', "EDIT")) { ?>
-                            <button type="button" data-toggle="modal" href="#editModel" class="btn btn-primary" title="जग्गाको क्षेत्रगत किसिम थप्नुहोस्" data-url="<?php echo base_url()?>RajasowTitle/edit" data-id = "<?php echo $value['id']?>"><i class="fa fa-edit"></i></button>
+                            <a href="<?php echo base_url()?>RajasowTitle/View/<?php echo $value['topic_id']?>" class="btn btn-warning"><i class="fa fa-eye"></i> नगदी शिर्षक हेर्नुहोस</a>
+                            <button type="button" data-toggle="modal" href="#editModel" class="btn btn-primary" data-url="<?php echo base_url()?>RajasowTitle/edit" data-id = "<?php echo $value['id']?>"><i class="fa fa-edit"></i> राजश्व आम्दानी शिर्षक सम्पादन गर्नुहोस </button>
                           <?php } ?>
                         
                         </td>
