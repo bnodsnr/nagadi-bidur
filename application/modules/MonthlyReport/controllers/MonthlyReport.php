@@ -60,12 +60,12 @@ class MonthlyReport extends MX_Controller
         }
     }
 
-    public function viewMonthlyNagadiDetails($topic_id) {
+  public function viewMonthlyNagadiDetails($topic_id) {
     if ($this->authlibrary->HasModulePermission('MONTHLY-REPORT', "VIEW")) {
-        $data['main_topic']         = $this->CommonModel->getWhere('main_topic', array('id' => $topic_id));
-        $data['nagadibilldetails']  = $this->MonthlyReportMDL->getNagadiBillDetailsByTopic($topic_id);
-        $data['cancel_amount']      = $this->MonthlyReportMDL->getNagadiBillDetailsCancelByTopic($topic_id);
-        $this->load->view('view_nagadibilldetailsbytopic',$data);
+      $data['main_topic']         = $this->CommonModel->getWhere('main_topic', array('id' => $topic_id));
+      $data['nagadibilldetails']  = $this->MonthlyReportMDL->getNagadiBillDetailsByTopic($topic_id);
+      $data['cancel_amount']      = $this->MonthlyReportMDL->getNagadiBillDetailsCancelByTopic($topic_id);
+      $this->load->view('view_nagadibilldetailsbytopic',$data);
     }
   }
   
@@ -74,22 +74,10 @@ class MonthlyReport extends MX_Controller
             $data['main_topic']         = $this->CommonModel->getWhere('main_topic', array('id' => $topic_id));
             $fy                         = str_replace('-', '/', $fiscal_year);
             $data['nagadibilldetails']  = $this->MonthlyReportMDL->getNagadiBillDetailsBySearch($topic_id,$from_date,$to_date,$ward_no,$fy);
-            //pp($data['nagadibilldetials']);
-            $data['cancel_amount']      = $this->MonthlyReportMDL->getNagadiBillDetailsCancelByTopic($topic_id);
+            $data['cancel_amount']      = $this->MonthlyReportMDL->getNagadiCancelBillDetailsBySearch($topic_id,$from_date,$to_date,$ward_no,$fy);
             $this->load->view('view_nagadibilldetailsbytopic',$data);
         }
-      //echo $topic_id.'-'.$from_date.'-'.$to_date.'-'.$fiscal_year;
     }
-
-    // public function viewOverSampatiAllDetails() {
-    //     if ($this->authlibrary->HasModulePermission('MONTHLY-REPORT', "VIEW")) {
-    //       $data['session_ward']       = $this->session->userdata('PRJ_USER_WARD');
-    //       $data['current_month']      = $this->current_month;
-    //       $data['nagadibilldetials']  = $this->MonthlyReportMDL->getNagadiBillDetails();
-    //       $data['sampatikardetails']  = $this->MonthlyReportMDL->getSearchSampatiKarDetails();
-    //       $this->load->view('view_sampatibilldetails',$data);
-    //     }
-    // }
     
     //get sampati billing details by month
     public function MonthlySampatiBhumiKarDetailsbyMonth() {
@@ -101,7 +89,6 @@ class MonthlyReport extends MX_Controller
     
     public function MonthlySampatiBhumiKarDetailSearch($from_date,$to_date,$ward_no,$fiscal_year) {
         $fy        = str_replace('-', '/', $fiscal_year);
-       // pp($this->session->userdata());
         $data['sampati_bhumi_kar']  = $this->MonthlyReportMDL->getSearchSampatiKarDetailsBySearch($from_date,$to_date,$ward_no,$fy);
         $data['cancelamount']       = $this->MonthlyReportMDL->getCancelSampatikarAmountDetailsBySearch($from_date,$to_date,$ward_no,$fy);
         $this->load->view('monthly_sampati_details', $data);
