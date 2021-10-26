@@ -61,7 +61,7 @@
                       </div>
                     </div>
 
-                    <?php if($this->session->userdata('PRJ_USER_WARD') == '0') { ?>
+                    <?php if($this->session->userdata('PRJ_USER_ID') == 1) { ?>
                     <div class="col-md-2">
                       <label>वार्ड</label>
                       <select class="form-control" id="monthly_ward_no">
