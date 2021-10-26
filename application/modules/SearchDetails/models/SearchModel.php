@@ -6,17 +6,11 @@
  */
 class SearchModel extends CI_Model
 {
-/** -------------------------------------------------------------------------------------
+/*-------------------------------------------------------------------------------------
 search
 -----------------------------------------------------------------------------------------*/
 
     public function getNagadiSearchDetails($from_date =NULL,$to_date=NULL, $ward=NULL, $fiscal_year=NULL,$user = NULL) {
-        // $ward_no                        = $this->input->post('search_added_ward');
-        // $from_date                      = $this->input->post('from_date');
-        // $to_date                        = $this->input->post('to_date');
-        // $fiscal_year                    = $this->input->post('fiscal_year');
-        // //$fy = str_replace("/", '-', $fiscal_year);
-        // echo $ward_no.'/'.$from_date.'/'.$to_date.'/'.$user;
         //exit;
         $this->db->select('t1.*,t1.bill_no,t1.added_by,t1.added_ward,t2.customer_name,t2.payment_mode,t2.status,t3.topic_name,t4.sub_topic,t5.topic_title, t6.reason,
             t7.name');
@@ -32,7 +26,8 @@ search
             $this->db->where('t1.added <=', $to_date);
         }
         if($this->session->userdata('PRJ_USER_ID') != 1){
-            $this->db->where('t1.added_ward', $this->session->userdata('PRJ_USER_WARD'));
+            //$this->db->where('t1.added_ward', $this->session->userdata('PRJ_USER_WARD'));
+            $this->db->where('t1.added_by', $this->session->userdata('PRJ_USER_ID'));
         } else {
             if($ward != '-' && !empty($ward)) {
                 if($ward == 'palika') {
@@ -59,7 +54,7 @@ search
             $this->db->where('added <=', $to_date);
         }
         if($this->session->userdata('PRJ_USER_ID') != 1){
-            $this->db->where('added_ward', $this->session->userdata('PRJ_USER_WARD'));
+            $this->db->where('added_by', $this->session->userdata('PRJ_USER_ID'));
         } else {
             if($ward != '-' && !empty($ward)) {
                 if($ward == 'palika') {
@@ -91,7 +86,8 @@ search
             $this->db->where('t1.billing_date <=', $to_date);
         }
         if($this->session->userdata('PRJ_USER_ID') != 1){
-            $this->db->where('t1.added_ward', $this->session->userdata('PRJ_USER_WARD'));
+            //$this->db->where('t1.added_ward', $this->session->userdata('PRJ_USER_WARD'));
+            $this->db->where('t1.added_by', $this->session->userdata('PRJ_USER_ID'));
         } else {
             if($ward != '-' && !empty($ward) ) {
                 if($ward == 'palika') {
@@ -122,7 +118,8 @@ search
             $this->db->where('billing_date <=', $to_date);
         }
         if($this->session->userdata('PRJ_USER_ID') != 1){
-            $this->db->where('added_ward', $this->session->userdata('PRJ_USER_WARD'));
+            $this->db->where('added_by', $this->session->userdata('PRJ_USER_ID'));
+            //$this->db->where('added_ward', $this->session->userdata('PRJ_USER_WARD'));
         } else {
             if($ward != '-' && !empty($ward) ) {
                 if($ward == 'palika') {

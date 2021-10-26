@@ -36,7 +36,7 @@
       <td>१</td>
       <td>११३१३</td>
       <td>एकीकृत सम्पती कर</td>
-      <td><?php echo !empty($sampati_kar['total'])?$this->mylibrary->convertedcit($sampati_kar['total']):$this->mylibrary->convertedcit(0)?></td>
+      <td><?php echo !empty($sampati_kar['total'])?$this->mylibrary->convertedcit(number_format($sampati_kar['total'],2)):$this->mylibrary->convertedcit(0)?></td>
       <td>
         <!-- <a href="<?php //echo base_url()?>MonthlyReport/MonthlySampatiBhumiKarDetailsView/<?php //echo $from_date.'/'.$to_date.'/'.$ward_no?>" class="btn btn-warning">रसिदको विवरण हेर्नुहोस</a> -->
       </td>
@@ -45,7 +45,7 @@
       <td>१</td>
       <td>११३१४</td>
       <td>भुमिकर/मालपोत</td>
-      <td><?php echo !empty($bhumi_kar['total'])?$this->mylibrary->convertedcit($bhumi_kar['total']):$this->mylibrary->convertedcit(0)?></td>
+      <td><?php echo !empty($bhumi_kar['total'])?$this->mylibrary->convertedcit(number_format($bhumi_kar['total'],2)):$this->mylibrary->convertedcit(0)?></td>
       <td>
          <a href="<?php echo base_url()?>MonthlyReport/MonthlySampatiBhumiKarDetailSearch/<?php echo $from_date.'/'.$to_date.'/'.$ward_no.'/'.$fiscal_year?>" class="btn btn-warning" target ="_blank">रसिदको विवरण हेर्नुहोस</a> 
       </td>
@@ -63,7 +63,7 @@
             $fy = str_replace('-','/',$fiscal_year);
             $collection_rate = $this->MonthlyReportMDL->SearchNagadiMontlhy($mt['id'],$ward_no,$from_date,$to_date, $fy);
           ?>
-          <td><?php echo !empty($collection_rate['total']) ? $this->mylibrary->convertedcit(round($collection_rate['total'])):$this->mylibrary->convertedcit(0)?></td>
+          <td><?php echo !empty($collection_rate['total']) ? $this->mylibrary->convertedcit(number_format($collection_rate['total'],2)):$this->mylibrary->convertedcit(0)?></td>
 
           <?php $nagadi_total += $collection_rate['total']?>
           <td><a href="<?php echo base_url()?>MonthlyReport/viewMonthlyNagadiDetailsSearch/<?php echo $mt['id'].'/'.$from_date.'/'.$to_date.'/'.$ward_no.'/'.$fiscal_year?>" class="btn btn-warning" target="_blank">रसिदको विवरण हेर्नुहोस</a></td>
@@ -78,7 +78,7 @@
       <?php
       $net_total = $nagadi_total + $sampati_kar['total'] + $bhumi_kar['total'];
       ?>
-      <td colspan="2" align="left"><?php echo !empty($net_total)?$this->mylibrary->convertedcit(round($net_total)):$this->mylibrary->convertedcit(0)?></td>
+      <td colspan="2" align="left"><?php echo !empty($net_total)?$this->mylibrary->convertedcit(number_format($net_total,2)):$this->mylibrary->convertedcit(0)?></td>
     </tr>
   </tfoot>                    
  </table>

@@ -289,7 +289,7 @@
 
       <td>११३१३</td>
 
-      <td><?php echo $this->mylibrary->convertedcit($sampati_kar['total'])?></td>
+      <td><?php echo $this->mylibrary->convertedcit(number_format($sampati_kar['total'],2))?></td>
 
     </tr>
 
@@ -301,7 +301,7 @@
 
       <td>११३१४</td>
 
-      <td><?php echo $this->mylibrary->convertedcit($bhumi_kar['total'])?></td>
+      <td><?php echo $this->mylibrary->convertedcit(number_format($bhumi_kar['total'],2))?></td>
 
     </tr>
 
@@ -318,7 +318,7 @@
         $fy = str_replace('-','/',$fiscal_year);
         $collection_rate = $this->MonthlyReportMDL->SearchNagadiMontlhy($mt['id'], $ward_no, $from_date, $to_date, $fy);
       ?>
-      <td><?php echo !empty($collection_rate['total'])?$this->mylibrary->convertedcit(round($collection_rate['total'])):$this->mylibrary->convertedcit(0)?></td>
+      <td><?php echo !empty($collection_rate['total'])?$this->mylibrary->convertedcit(number_format($collection_rate['total'],2)):$this->mylibrary->convertedcit(0)?></td>
       <?php $nagadi_total += $collection_rate['total']?>
     </tr>
     <?php endforeach;endif;?>
@@ -328,7 +328,7 @@
         <?php
           $net_total = $nagadi_total + $sampati_kar['total'] + $bhumi_kar['total'];
         ?>
-        <td colspan="2" align="left"><?php echo !empty($net_total)?$this->mylibrary->convertedcit(round($net_total)):$this->mylibrary->convertedcit(0)?></td>
+        <td colspan="2" align="left"><?php echo !empty($net_total)?$this->mylibrary->convertedcit(number_format($net_total,2)):$this->mylibrary->convertedcit(0)?></td>
       </tr>
 
     </tfoot>
