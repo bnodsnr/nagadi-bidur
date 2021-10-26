@@ -319,15 +319,6 @@ class MonthlyReportMDL extends CI_Model
 				}
 			}
 		}
-		// if($this->session->userdata('PRJ_USER_GROUP') == 1 ) {
-		//     if($ward != 1 ) {
-		//         $this->db->where('t1.added_ward', $ward);
-		//     }
-		// } elseif($this->session->userdata('PRJ_USER_GROUP') == 2 ) {
-		//     $this->db->where('t1.added_ward', '0');
-		// } else {
-		//     $this->db->where('t1.added_ward',$this->session->userdata('PRJ_USER_WARD'));
-		// }
 		if(!empty($fiscal_year)) {
 			$this->db->where('t1.fiscal_year', $fiscal_year);
 		}
@@ -354,16 +345,6 @@ class MonthlyReportMDL extends CI_Model
 				}
 			}
 		}
-        // if($this->session->userdata('PRJ_USER_GROUP') == 1 ) {
-		//     if($ward != 1 ) {
-		//         $this->db->where('added_ward', $ward);
-		//     }
-		// } elseif($this->session->userdata('PRJ_USER_GROUP') == 2 ) {
-		//     $this->db->where('added_ward', '0');
-		// } else {
-		//     $this->db->where('added_ward',$this->session->userdata('PRJ_USER_WARD'));
-		// }
-		
 		if(!empty($user)){
 			$this->db->where('added_by', $user);
 		}
