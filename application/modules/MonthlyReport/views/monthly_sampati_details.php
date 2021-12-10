@@ -218,7 +218,7 @@
 
     <div style="font-size: 28px;margin-left: 484px;margin-top: -130px;"><b><?php echo GNAME?></b></div>
 
-    <div style="margin-left: 500px;margin-top: 0;font-size: 14px;"><b><?php  if($this->session->userdata('PRJ_USER_WARD') == '0'){ echo SLOGAN; } else { echo $this->mylibrary->convertedcit($this->session->userdata('PRJ_USER_WARD')).' नं. वडा कार्यलय';}?></b></div>
+    <div style="margin-left: 500px;margin-top: 0;font-size: 14px;"><b><?php  if($this->session->userdata('PRJ_USER_ID') == 1){ echo SLOGAN; } else { echo $this->mylibrary->convertedcit($this->session->userdata('PRJ_USER_WARD')).' नं. वडा कार्यलय';}?></b></div>
 
     <div style="margin-left: 524px;margin-top:0;font-size: 14px;"><b><?php echo ADDRESS.','.DISTRICT?></b></div>
         <hr style="margin-top: 55px;">
@@ -274,10 +274,10 @@
                   $i =1;
 
                   $sampati_total = 0;
-                  $ssampati_kar =0;
+                  $ssampati =0;
                   $sbhumi = 0;
                   $sother_amount = 0;
-                  $sfineamount = 0;
+                  $sfine_amount = 0;
                   $sbhumiba = 0;
                   $ssampatiba = 0;
                   $sdiscount = 0;
