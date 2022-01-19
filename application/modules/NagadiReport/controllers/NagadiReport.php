@@ -80,7 +80,7 @@ class NagadiReport extends MX_Controller
     $htmlString = '';
     $extra_text = 'समग्र वडागत रिपोर्ट';
     // ----------------------------sampati kar details--------------------------------
-    $htmlString .= '<table class=""><tr><td colspan="11" style="text-align: center;background-color:#1b5693;font-size:28px;color:#e5e5e5">समग्र वडागत रिपोर्ट </td></tr></table>
+    $htmlString .= '<table class=""><tr><td colspan="17" style="text-align: center;background-color:#1b5693;font-size:28px;color:#e5e5e5">समग्र वडागत रिपोर्ट </td></tr></table>
     <table><thead><tr><th>शिर्षक</th><th>शिर्षक नं</th><th>पालिका</th><th>वडा १</th><th>वडा २</th><th>वडा ३</th><th>वडा ४</th><th>वडा ५</th><th>वडा ६</th><th>वडा ७</th><th class="hidden-phone">वडा ८</th><th class="hidden-phone">वडा ९</th>
 									<th class="hidden-phone">वडा १०</th><th class="hidden-phone">वडा ११</th>
 									<th class="hidden-phone">वडा १२</th><th class="hidden-phone">वडा १३</th><th>जम्मा रु:</th></tr></thead><tbody>';

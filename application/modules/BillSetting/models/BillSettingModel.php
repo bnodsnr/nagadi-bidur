@@ -38,6 +38,7 @@ class BillSettingModel extends CI_Model {
 				->where('user_id', $user_id)
 				->where('bill_type', $bill_type)
 				->where('fiscal_year', $this->fy)
+				->where('status', 1)
 				->get()
 				->row_array();
 	}
@@ -57,10 +58,24 @@ class BillSettingModel extends CI_Model {
 		return $query->result();
 	}
 
-	// public function isValidToBill($from_bill, $type) {
-	// 	$sql = "SELECT * FROM settings_bill_setup WHERE $from_bill BETWEEN bill_from AND bill_to AND fiscal_year = '{$this->fy}' AND bill_type = '{$type}'";
-	// 	$query = $this->db->query($sql);
-	// 	return $query->result();
-	// }
+	public function getMaxActiveNagadiBills($userid) {
+		$this->db->select('bill_no')->from('nagadi_rasid');
+		$this->db->where('added_by', $userid);
+		$this->db->order_by('id',"DESC");
+		$this->db->limit(1);
+		$query = $this->db->get();
+		return $query->row_array();
+	}
+
+	//getMaxActiveSampatiBills
+	public function getMaxActiveSampatiBills($userid)
+	{
+		$this->db->select('bill_no')->from('sampati_kar_bhumi_kar_bill_details');
+		$this->db->where('added_by', $userid);
+		$this->db->order_by('id', "DESC");
+		$this->db->limit(1);
+		$query = $this->db->get();
+		return $query->row_array();
+	}
 
 }

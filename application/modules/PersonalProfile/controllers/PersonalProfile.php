@@ -1055,8 +1055,204 @@ class PersonalProfile extends MY_Controller
     }
   }
 
-  public function downloadProfile() {
-    
+  public function transferProfile($file_no)
+  {
+    if ($this->authlibrary->HasModulePermission($this->module_code, "EDIT")) {
+      $id = $this->uri->segment(3);
+      if (empty($id)) {
+        show_404();
+      }
+      $fiscal_year                = get_current_fiscal_year();
+      $data['page']               = 'transfer_profile';
+      $data['fiscal_year']        = $this->CommonModel->getData('fiscal_year', 'DESC');
+      $data['occupation']         = $this->CommonModel->getData('settings_job', 'DESC');
+      $data['provinces']          = $this->CommonModel->getData('provinces', 'DESC');
+      $data['districts']          = $this->CommonModel->getData('settings_district', 'DESC');
+      $data['ward']               = $this->CommonModel->getData('settings_ward', 'DESC');
+      $data['nationality']        = $this->CommonModel->getData('settings_nationality', 'DESC');
+      $data['rel']                = $this->CommonModel->getData('settings_relation', 'DESC');
+      $data['profile_details']    = $this->CommonModel->getWhere('land_owner_profile_basic', array('file_no' => $file_no));
+      $data['lo_family_details'] = $this->CommonModel->getAllDataBySelectedFields('land_owner_family_details', 'profile_file_no', $data['profile_details']['file_no']);
+      $user = $this->session->userdata("PRJ_USER_ID");
+      $data['users'] = $this->CommonModel->getCurrentUser($user);;
+      $this->load->view('main', $data);
+    } else {
+      $this->session->set_flashdata('MSG_ACCESS', 'तपाईंको अनुमति अस्वीकृत गरिएको छ');
+      redirect('Dashboard');
+    }
+  }
+
+  public function saveTransferProfile()
+  {
+    if ($this->input->is_ajax_request()) {
+      /*------- land owner basic details--------------------------------*/
+      $form_type                        = $this->input->post('form_type');
+      $fiscal_year                      = $this->input->post('fiscal_year');
+      $land_own_type                    = $this->input->post('land_own_type');
+      $land_owner_name_np               = $this->input->post('land_owner_name_np');
+      $land_owner_name_en               = $this->input->post('land_owner_name_en');
+      $land_owner_father_name           = $this->input->post('land_owner_father_name');
+      $land_owner_grandpa_name          = $this->input->post('land_owner_grandpa_name');
+      $land_owner_occupation            = $this->input->post('land_owner_occupation');
+      $land_owner_gender                = $this->input->post('land_owner_gender');
+      $nationality                      = $this->input->post('nationality');
+      $land_owner_email                 = $this->input->post('land_owner_email');
+      $land_owner_contact_no            = $this->input->post('land_owner_contact_no');
+      $land_owner_remarks               = $this->input->post('land_owner_remarks');
+      /*-------------land on details------------------------------------------*/
+      $lo_province                      = $this->input->post('lo_province');
+      $lo_district_id                   = $this->input->post('lo_district_id');
+      $lo_gapanapa                      = $this->input->post('lo_gapanapa');
+      $lo_address_ward                  = $this->input->post('lo_address_ward');
+      // $lo_land_ward                     = $this->input->post('lo_land_ward');
+      $lo_temp_add                      = $this->input->post('lo_temp_add');
+      $lo_house_no                      = $this->input->post('lo_house_no');
+      $lo_tol                           = $this->input->post('lo_tol');
+      $lo_file_no                       = $this->input->post('lo_file_no');
+      $lo_land_lac_ward                 = $this->input->post('lo_land_ward');
+      $lo_czn_no                        = $this->input->post('lo_czn_no');
+      $lo_pan_no                        = $this->input->post('lo_pan_no');
+      /*----------form filler details-------------------------------*/
+      $form_filler_state                = $this->input->post('form_filler_state');
+      $form_filler_district             = $this->input->post('form_filler_district');
+      $form_filler_vdc_municipality_id  = $this->input->post('form_filler_vdc_municipality_id');
+      $form_filler_ward_no_id           = $this->input->post('form_filler_ward_no_id');
+      $form_filler_relation             = $this->input->post('form_filler_relation');
+      $form_filler_name                 = $this->input->post('form_filler_name');
+      $form_filler_date                 = $this->input->post('form_filler_date');
+      /*-----------------------family details-------------------------------*/
+      $family_member_name               = $this->input->post('family_member_name');
+      $family_member_dob                = $this->input->post('family_member_dob');
+      $family_member_relation           = $this->input->post('family_member_relation');
+
+      /*-------------------------land owner temp address--------------------------*/
+      $lo_temp_state = $this->input->post('lo_temp_state');
+      $lo_temp_dis = $this->input->post('lo_temp_district');
+      $lo_temp_gapanapa = $this->input->post('lo_temp_gapanapa');
+      $lo_temp_ward = $this->input->post('lo_temp_ward');
+      $lo_temp_tol = $this->input->post('lo_temp_tol');
+      $lo_temp_house_no = $this->input->post('lo_temp_house_no');
+
+      $old_file_no = $this->input->post('old_file_no');
+
+      $this->form_validation->set_rules('land_owner_name_np',     'संस्थाको नाम', 'required');
+      $this->form_validation->set_rules('land_owner_name_en',     'संस्थाको नाम (अंग्रेजी)', 'required');
+      $this->form_validation->set_rules('land_owner_grandpa_name', 'दर्ता मिती', 'required');
+      $this->form_validation->set_rules('lo_czn_no', 'संस्थाको दर्ता न', 'required');
+      //$this->form_validation->set_rules('lo_pan_no', 'पान न', 'required');
+      $this->form_validation->set_rules('land_owner_grandpa_name', 'दर्ता मिती', array('trim', 'required'));
+      $this->form_validation->set_rules('land_owner_occupation', 'संस्थाको किसिम', array('trim', 'required'));
+      $this->form_validation->set_rules('land_owner_contact_no', 'सम्पर्क फोन नं', array('trim', 'required'));
+
+      $this->form_validation->set_rules('lo_province', 'स्थायी ठेगाना प्रदेश', array('trim', 'required'));
+      $this->form_validation->set_rules('lo_district_id', 'स्थायी जिल्ला', array('trim', 'required'));
+      $this->form_validation->set_rules('lo_gapanapa', 'गा पा / न पा', array('trim', 'required'));
+      $this->form_validation->set_rules('lo_address_ward', 'स्थायी वडा नं', array('trim', 'required'));
+      $this->form_validation->set_rules('lo_land_ward', 'जग्गा रहेको वडा नं', array('trim', 'required'));
+      $this->form_validation->set_rules('lo_tol', 'स्थायी ठेगाना', array('trim', 'required'));
+      $this->form_validation->set_rules('lo_file_no', 'करदाताको क्र.स नम्बर', array('trim', 'required'));
+
+      $this->form_validation->set_rules('lo_temp_state', 'अस्थायी प्रदेश', array('trim', 'required'));
+      $this->form_validation->set_rules('lo_temp_district', 'अस्थायी जिल्ला', array('trim', 'required'));
+      $this->form_validation->set_rules('lo_temp_gapanapa', 'अस्थायी गा पा / न पा ', array('trim', 'required'));
+      $this->form_validation->set_rules('lo_temp_ward', 'अस्थायी वडा नं', array('trim', 'required'));
+      $this->form_validation->set_rules('lo_temp_tol', 'अस्थायी टोल/ठाउँ', array('trim', 'required'));
+
+      if ($this->form_validation->run() == false) {
+        $response = array(
+          'status'      => 'validation_error',
+          'message'     => '<div class="alert alert-danger">' . validation_errors() . '</div>',
+        );
+        header("Content-type: application/json");
+        echo json_encode($response);
+        exit;
+      }
+      $is_unique_file_no = is_unique_file_no($lo_file_no);
+      if ($is_unique_file_no == 1) {
+        $response = array(
+          'status'      => 'validation_error',
+          'message'     => '<div class="alert alert-danger">File number is already taken</div>',
+        );
+        header("Content-type: application/json");
+        echo json_encode($response);
+        exit;
+      }
+      $basic_info = array(
+        'fiscal_year'                 => $fiscal_year,
+        'land_own_type'               => $land_own_type,
+        'land_owner_name_np'          => $land_owner_name_np,
+        'land_owner_name_en'          => $land_owner_name_en,
+        'land_owner_father_name'      => $land_owner_father_name,
+        'land_owner_grandpa_name'     => $land_owner_grandpa_name,
+        'land_owner_occupation'       => $land_owner_occupation,
+        'land_owner_gender'           => $land_owner_gender,
+        'nationality'                 => $nationality,
+        'land_owner_email'            => $land_owner_email,
+        'land_owner_contact_no'       => $land_owner_contact_no,
+        'file_no'                     => $lo_file_no,
+        /*------ land owner details---------------------*/
+        'lo_state'                    => $lo_province,
+        'lo_district'                 => $lo_district_id,
+        'lo_gapa_napa'                => $lo_gapanapa,
+        'lo_ward'                     => $lo_address_ward,
+        'lo_land_lac_ward'            => $lo_land_lac_ward,
+        'lo_house_no'                 => $lo_house_no,
+        'lo_tol'                      => $lo_tol,
+        'lo_czn_no'                   => $lo_czn_no,
+        'lo_pan_no'                   => $lo_pan_no,
+
+        /*--------temporary adderess----------------------*/
+        'lo_temp_state'               => $lo_temp_state,
+        'lo_temp_dis'                 => $lo_temp_dis,
+        'lo_temp_gapanapa'            => $lo_temp_gapanapa,
+        'lo_temp_ward'                => $lo_temp_ward,
+        'lo_temp_tol'                 => $lo_temp_tol,
+        'lo_temp_house_no'            => $lo_temp_house_no,
+        /*-----------form filler details-------------------*/
+        'lo_fi_state'                 => $form_filler_state,
+        'lo_fi_district'              => $form_filler_district,
+        'lo_fi_gapa_napa'             => $form_filler_vdc_municipality_id,
+        'lo_fi_relation'              => $form_filler_relation,
+        'lo_fi_ward'                  => $form_filler_ward_no_id,
+        // 'lo_fi_name'                  => $form_filler_relation,
+        'lo_fi_name'                  => $form_filler_name,
+        'lo_fi_date'                  => $form_filler_date,
+        'remarks'                     => $land_owner_remarks,
+        'status'                      => 1,
+        'transfer_fileno'             => $old_file_no,
+        'added_by'                    => $this->session->userdata('PRJ_USER_ID'),
+        'added_ward'                  => $this->session->userdata('PRJ_USER_WARD'),
+        'added_on'                    =>  convertDate(date('Y-m-d')),
+        'modified_on'                 => '',
+        'modified_by'                 => '',
+        'form_type'                   => $form_type,
+      );
+      //family details
+      $this->ProfileModel->saveProfileDetails($basic_info);
+      $details = array();
+      foreach ($family_member_name as $key => $indexv) {
+        $details[] = array(
+          'member_name'               => $family_member_name[$key],
+          'member_age'                => $family_member_dob[$key],
+          'member_relation'           => $family_member_relation[$key],
+          'profile_file_no'           => $lo_file_no,
+          'added_by'                    => $this->session->userdata('PRJ_USER_ID'),
+          'added_on'                    =>  convertDate(date('Y-m-d')),
+        );
+      }
+      $result = $this->ProfileModel->saveFamilyDetails($details);
+      if ($result) {
+        $response = array(
+          'status'      => 'success',
+          'data'         => "सफलतापूर्वक सम्मिलित गरियो",
+          'message'     => 'redirect',
+          'redirect_url'       => base_url() . 'LandDetails/transerLandDetails/' . $lo_file_no,
+        );
+        header("Content-type: application/json");
+        echo json_encode($response);
+        exit;
+      }
+    }
   }
 }//end of class
 ?>

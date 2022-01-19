@@ -28,7 +28,7 @@
                   <?php $i=1; foreach($sub_topics as $item) : ?>
                     <tr>
                       <td><?php echo $this->mylibrary->convertedcit($i++)?></td>
-                      <td><i class="fa fa-check-circle" style="color:green"></i> <?php echo $item['topic_title']?> </td>
+                      <td><i class="fa fa-check-circle" style="color:green"></i> <?php echo $item['topic_title']?> (आर्थिक वर्ष-<?php echo $this->mylibrary->convertedcit($item['fiscal_year'])?>)</td>
                       <td><?php echo $this->mylibrary->convertedcit($item['topic_no'])?></td>
                       <td><button type="button" data-toggle="modal" href="#editModel" class="btn btn-primary" title="जग्गाको क्षेत्रगत किसिम थप्नुहोस्" data-url="<?php echo base_url()?>RajasowTitle/editTopicNo" data-id = "<?php echo $item['id']?>"><i class="fa fa-pencil"></i> शिर्षक नं सम्पादन गर्नुहोस</button></a></td>
                     </tr>

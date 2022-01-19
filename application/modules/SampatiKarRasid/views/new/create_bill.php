@@ -330,8 +330,15 @@
 							            				<?php 
 							            					$sampati_kar_range = $this->SampatiKarRasidModel->getSampatiKarAmount($sampati_mulyankan_amount);
 							            					$sampati_payable_amount = !empty($sampati_kar_range['sampati_kar'])? $sampati_kar_range['sampati_kar']:0;
+							            					
+							            					if($sampati_mulyankan_amount >100000000) {
+							            					    $samount = $total_bhumi_mulkyan/1000;
+							            					    $skar = round($amount * 0.50);
+							            					} else {
+							            					    $skar = !empty($sampati_kar_range) ? $sampati_kar_range['sampati_kar'] : 0;
+							            					}
 							            				?>
-							            				<input type="text" name="sampati_kar" value="<?php echo  !empty($sampati_kar_range)?$sampati_kar_range['sampati_kar']:0;?>"
+							            				<input type="text" name="sampati_kar" value="<?php echo  $skar?>"
 							            				class=" form-control sampati_kar" readonly>
 							            			</div>
 							            		</div>
@@ -341,8 +348,15 @@
 							            				<?php 
 							            					$bhumi_kar_range = $this->SampatiKarRasidModel->getBhumiKarAmount($total_bhumi_mulkyan);
 							            					$bhumi_payable_amount = !empty($bhumi_kar_range['bhumi_kar'])? $bhumi_kar_range['bhumi_kar']:0;
+							            					
+							            					if($total_bhumi_mulkyan >100000000) {
+							            					    $amount = $total_bhumi_mulkyan/1000;
+							            					    $bhumikar = round($amount * 0.25);
+							            					} else {
+							            					    $bhumikar = !empty($bhumi_kar_range) ? $bhumi_kar_range['bhumi_kar'] : 0;
+							            					}
 							            				?>
-							            				<input type="text" name="bhumi_kar" value="<?php echo  !empty($bhumi_kar_range)?$bhumi_kar_range['bhumi_kar']:0?>"
+							            				<input type="text" name="bhumi_kar" value="<?php echo  $bhumikar;?>"
 							            				class=" form-control sampati_kar" readonly>
 							            			</div>
 							            		</div>
@@ -372,8 +386,8 @@
 							            		<div class="col-md-4">
 							            			<div class="form-group">
 							            				<label>छुट रकम रु.</label>
-							            				<?php $disamount = $totalPayableKar * 0.10;?>
-							            				<input type="text" name="discount_amount" value="<?php echo !empty($disamount)?$disamount:0;?>" class="form-control decimal_field" id="discount_amount">
+							            				<?php //$disamount = $totalPayableKar * 0.10;?>
+							            				<input type="text" name="discount_amount" value="0" class="form-control decimal_field" id="discount_amount">
 							            			</div>
 							            		</div>
 

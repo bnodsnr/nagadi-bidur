@@ -228,7 +228,20 @@ class SearchDetails extends MX_Controller
     $htmlString .= '</table>';
 
     // ----------------------------sampati kar details--------------------------------
-    $htmlString .= '<table class=""><tr><td colspan="15" style="text-align: center;background-color:#1b5693;color:#e5e5e5">सम्पति / भुमि कर विवरण</td></tr><tr><td colspan="15" style="text-align: center;font-size:10px;">' . $extra_text . '</td></tr></table><table> <tbody><thead><tr><th>शिर्षक</th><th>पालिका</th><th>वडा २</th><th>वडा ३</th><th>वडा ४</th><th>वडा ५</th><th>वडा ६</th><th>वडा ७</th><th>वडा ८</th><th>वडा ९</th><th>वडा १०</th><th>वडा ११</th><th>वडा १२</th><th>वडा १३</th><th>जम्मा रु:</th></tr></thead>';
+    $htmlString .= '<table class=""><tr><td colspan="15" style="text-align: center;background-color:#1b5693;color:#e5e5e5">सम्पति / भुमि कर विवरण</td></tr><tr><td colspan="15" style="text-align: center;font-size:10px;">' . $extra_text . '</td></tr></table>
+    <table> <thead>
+    <tr><th>सि.नं</th>
+        <th>मिति</th>
+        <th>रसिद नं</th>
+        <th>करदाताको नाम</th>
+        <th class="hidden-phone">मुख्य शिर्षक</th>
+        <th class="hidden-phone">सह शिर्षक</th>
+        <th class="hidden-phone">शिर्षक</th>
+        <th class="hidden-phone">रकम</th>
+        <th class="hidden-phone">अवस्था</th>
+        <th class="hidden-phone">रसिद काट्नेको नाम </th>
+        
+    </tr></thead><tbody>';
     $ssampati = 0;
     $sbhumi = 0;
     $sother_amount = 0;

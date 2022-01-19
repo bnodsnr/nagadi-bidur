@@ -33,6 +33,8 @@
                           <th style="width:50px;">#</th> 
                           <th>आर्थिक वर्ष</th>
                           <th> मिति </th>
+                          
+                          
                           <th>करदाताको नाम.</th>
                           <th>रशिद.</th>
                           <?php if($this->session->userdata('PRJ_USER_ID')== 1) { ?>
@@ -51,7 +53,19 @@
                         <tr <?php if($value['status'] != 1){?> style="background: #e40d0d;" <?php }?>>
                             <td style="width:50px;"><?php echo $this->mylibrary->convertedcit($i++)?></td>
                             <td><p class="badge badge-sm badge-info"><?php echo $this->mylibrary->convertedcit($value['fiscal_year'])?></p></td>
-                            <td><p class="badge badge-sm badge-info"><?php echo $this->mylibrary->convertedcit($value['date'])?></p></td>
+                            <td><p class="">
+                          
+                            <?php if($this->session->userdata('PRJ_USER_ID')== 1) { 
+                            echo $this->mylibrary->convertedcit($value['added_on']);
+                            } else {
+                                echo $this->mylibrary->convertedcit($value['date']);
+                            }
+                            
+                            ?>
+                            
+                            </p></td>
+                            
+                            
                             <td><?php echo $value['customer_name']?></td>
                             <td><?php echo $this->mylibrary->convertedcit($value['bill_no'])?></td>
                             <?php if($this->session->userdata('PRJ_USER_ID')== 1) { ?>

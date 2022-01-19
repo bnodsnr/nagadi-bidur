@@ -726,15 +726,6 @@ class LandDetails extends MY_Controller
         $id = $this->input->post('id');
         $data['landdetail'] = $this->CommonModel->getDataByID('land_description_details', $id);
         $this->load->view('kitta_remove_reason',$data);
-        
-        // $data = array('buy_sell_status' => 2);
-        // $file_no = $this->CommonModel->getWhere('land_description_details',array('id' => $id));
-        // //pp($file_no);
-        // $result = $this->CommonModel->UpdateData('land_description_details',$id, $data);
-        // if($result) {
-        //   $this->session->set_flashdata('MSG_SUCCESS',"कित्ता बदर गर्न सफल ");
-        //   redirect('LandDetails/veiwLandDescription/'.$file_no['ld_file_no']);
-        // } 
   }
   
   /**
@@ -780,6 +771,109 @@ class LandDetails extends MY_Controller
         $data['reason'] = $this->CommonModel->getWhere('kitta_cut', array('land_id' => $id));
         $this->load->view('badar_reason',$data);
     }
+
+
+  //transfer kitta
+  public function transerLandDetails($file_no)
+  {
+    $data['page']               = 'bidur/transfer_land';
+    $data['file_no']            = $file_no;
+    $data['land_owner']         = $this->CommonModel->GetLandOwnerRowByFileNo($file_no);
+    $data['transfer_profile']   = $this->CommonModel->GetLandOwnerRowByFileNo($data['land_owner']['transfer_fileno']);
+    $data['lands']              = $this->LandDetailsModel->GetLandDetails($data['land_owner']['transfer_fileno']);
+    $data['has_bill']           = $this->LandDetailsModel->checkIfTaxPaid($file_no);
+    $this->load->view('main', $data);
+  }
+
+  //save transfered land data
+  public function saveTranserLands()
+  {
+    $land_ids = $this->input->post('land_id');
+    $updateids = implode(',', $land_ids);
+
+    $old_file_no = $this->input->post('old_file_no');
+    $ld_file_no = $this->input->post('ld_file_no');
+    $remarks = $this->input->post('remarks');
+    if (empty($land_ids)) {
+      $this->session->set_flashdata('MSG_ACCESS', 'कित्ता नामसारी गर्नुपर्ने कित्ता नं. मा टिक लगानुहोस');
+      redirect('LandDetails/transerLandDetails/' . $ld_file_no);
+    }
+
+    if (empty($old_file_no)) {
+      $this->session->set_flashdata('MSG_ACCESS', 'Invalid request!!! please try again');
+      redirect('LandDetails/transerLandDetails/' . $ld_file_no);
+    }
+
+    if (empty($ld_file_no)) {
+      $this->session->set_flashdata('MSG_ACCESS', 'Invalid request!!! please try again');
+      redirect('LandDetails/transerLandDetails/' . $ld_file_no);
+    }
+
+    if (empty($remarks)) {
+      $this->session->set_flashdata('MSG_ACCESS', 'कैफियत लेख्नुहोस');
+      redirect('LandDetails/transerLandDetails/' . $ld_file_no);
+    }
+    $new_lands = $this->LandDetailsModel->getByIds($land_ids);
+    //pp($new_lands);
+    $land_data = array();
+    if (!empty($new_lands)) {
+      foreach ($new_lands as $land) {
+        $land_data[] = array(
+          'old_gapa_napa'     => $land->old_gapa_napa,
+          'old_ward'          => $land->old_ward,
+          'present_gapa_napa' => $land->present_gapa_napa,
+          'present_ward'      => $land->present_ward,
+          'road_name'         => $land->road_name,
+          'land_area_type'    => $land->land_area_type,
+          'land_category'     => $land->land_category,
+          'nn_number'         => $land->nn_number,
+          'k_number'          => $land->k_number,
+          'a_ropani'          => $land->a_ropani,
+          'a_paisa'           => $land->a_paisa,
+          'a_ana'             => $land->a_ana,
+          'a_dam'             => $land->a_dam,
+          'a_unit'            => $land->a_unit,
+          'total_square_feet' => $land->total_square_feet,
+          'min_land_rate'     => $land->min_land_rate,
+          'max_land_rate'     => $land->max_land_rate,
+          'k_land_rate'       => $land->k_land_rate,
+          'fiscal_year'       => $this->fy,
+          't_rate'            => $land->t_rate,
+          'ld_file_no'        => $ld_file_no,
+          'reasontoadd'       => 3,
+          'added_by'          => $this->session->userdata('PRJ_USER_ID'),
+          'added_on'          => convertDate(date('Y-m-d'))
+        );
+      }
+    }
+    $result = $this->LandDetailsModel->saveTransLand($land_data);
+    if ($result) {
+      $data = array(
+        'status' => 3,
+        'buy_sell_status' => 2
+      );
+      $this->LandDetailsModel->updateTransLand($updateids, $data);
+      redirect('LandDetails/veiwLandDescription/' . $ld_file_no);
+    }
+  } //end of function
+
+    //get land details
+    // public function getLandDetailsByFileNo() {
+    //   if($this->input->is_ajax_request()) {
+    //     $file_no          = $this->input->post('file_no');
+    //     $data['lands']    = $this->LandDetailsModel->GetLandDetails($file_no);
+    //     $data_view             = $this->load->view('bidur/land_to_transfer', $data, true);
+    //     $response = array(
+    //       'status'        => 'success',
+    //       'data'          => $data_view,
+    //     );
+    //       header("Content-type: application/json");
+    //       echo json_encode($response);
+    //       exit;
+    //     } else {
+    //       echo "invalid request!!!";
+    //   }
+    // }
 
 }//end of class
 

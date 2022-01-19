@@ -598,6 +598,31 @@ class LandDetailsModel extends CI_Model{
 
     }
 
+    //get by ids
+    public function getByIds($ids)
+    {
+        $this->db->select('*')->from('land_description_details');
+        $this->db->where_in('id', $ids);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    //save transfer lands
+    public function saveTransLand($data)
+    {
+        $this->db->trans_start();
+        $this->db->insert_batch('land_description_details', $data);
+        $this->db->trans_complete();
+        return ($this->db->trans_status() === FALSE) ? FALSE : TRUE;
+    }
+
+    public function updateTransLand($ids, $data)
+    {
+        $this->db->where_in('id', $ids);
+        $this->db->update('land_description_details', $data);
+        return true;
+    }
+
 }//end of class
 
 

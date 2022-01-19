@@ -488,22 +488,11 @@ class RajasowTitleWiseModel extends CI_Model
 		// 	// $this->db->where('t1.substring(added,6,2) >', $this->current_month);
 		// 	// $this->db->where_not_in('t1.substring(added,6,2)', $ignore);
 		// } 
-		// else {
-
-			SELECT * FROM `nagadi_amount_details` where substring(added,6,2) = 06 and fiscal_year = '2078/079' and tpn = 14611
-
-			update nagadi_amount_details set tpn = 14253 where substring(added,6,2) = 06 and fiscal_year = '2078/079' and tpn = 14611
-			//SELECT * FROM `nagadi_amount_details` where main_topic = 1 and topic = "others" and tpn is NULL
-			//UPDATE `nagadi_amount_details` set tpn = 14253 where main_topic = 1 and topic = "others" and tpn is NULL 
-			//14105,
-			'14611' => 14253,
-			'14102' =>
-			'14105' => 14249
-			,14244
-            //UPDATE    nagadi_amount_details c,
-          	//sub_topic cl
-    		//SET       c.tpn = cl.topic_no
-   			//WHERE     c.topic = cl.id;
+		// else { 14105,14611,14244
+            UPDATE    nagadi_amount_details c,
+          sub_topic cl
+    SET       c.tpn = cl.topic_no
+   WHERE     c.topic = cl.id;
 		// 	$this->db->where('t1.substring(added,6,2) !=', $this->current_month);
 		// }
 

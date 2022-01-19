@@ -305,7 +305,7 @@ class NagadiRasid extends MX_Controller
                             'fiscal_year'   => $fiscal_year,
                             'bill_no'       => $bill_no,
                             'added_by'      => $userid,
-                            'added_ward'    => $this->session->userdata('PRJ_USER_WARD'),
+                            'added_ward'        => $this->session->userdata('PRJ_USER_WARD'),
                             'tpn'           => $tpn['topic_no'],
                         );
                     }
@@ -636,7 +636,13 @@ class NagadiRasid extends MX_Controller
               {
                     $nestedData['sn']               = $this->mylibrary->convertedcit($i++);
                     $nestedData['id']               = $post->id;
-                    $nestedData['date']             = $this->mylibrary->convertedcit($post->date);
+                    
+                    if($this->session->userdata('PRJ_USER_ID') == 1) {
+                        $nestedData['date']             = $this->mylibrary->convertedcit($post->added_on);
+                    } else {
+                        $nestedData['date']             = $this->mylibrary->convertedcit($post->date);
+                    }
+                    
                     $nestedData['guid']             = $post->guid;
                     $nestedData['name']             = $this->mylibrary->convertedcit($post->customer_name);
                     $nestedData['bill_number']      = $this->mylibrary->convertedcit($post->bill_no);

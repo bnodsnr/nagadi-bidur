@@ -724,10 +724,11 @@ class NagadiRasidModel extends CI_Model {
         }
 
 
-
+        // $this->db->where('t1.added_by', $this->session->userdata('PRJ_USER_ID'));
         if($this->session->userdata('PRJ_USER_ID') != 1) {
 
-            $this->db->where('t1.added_ward',$this->session->userdata('PRJ_USER_WARD'));
+            // $this->db->where('t1.added_ward',$this->session->userdata('PRJ_USER_WARD'));
+            $this->db->where('t1.added_by', $this->session->userdata('PRJ_USER_ID'));
 
         }
 
@@ -816,12 +817,12 @@ class NagadiRasidModel extends CI_Model {
         }
 
 
-
+    // $this->db->where('added_by', $this->session->userdata('PRJ_USER_ID'));
 
 
         if($this->session->userdata('PRJ_USER_ID') != 1) {
 
-            $this->db->where('added_ward',$this->session->userdata('PRJ_USER_WARD'));
+            $this->db->where('added_by', $this->session->userdata('PRJ_USER_ID'));
 
         }
 

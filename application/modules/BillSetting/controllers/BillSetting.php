@@ -69,10 +69,10 @@ class BillSetting extends MX_Controller
                 $this->session->set_flashdata('MSG_ALERT','Bill Range is already in used');
                 redirect('BillSetting/add');
             }
-            // if(!empty($check_active_bill)) {
-            //     $this->session->set_flashdata('MSG_ALERT','Acitve bill eixts');
-            //     redirect('BillSetting/add');
-            // }
+            if(!empty($check_active_bill)) {
+                $this->session->set_flashdata('MSG_ALERT','Acitve bill eixts. Please close bill first');
+                redirect('BillSetting/add');
+            }
             $post_data = array(
                 'user_id'       => $this->input->post('user_id'),
                 'bill_type'     => $this->input->post('bill_type'),
@@ -141,6 +141,38 @@ class BillSetting extends MX_Controller
             }
         } else {
             exit('no direct script allowed!!!');
+        }
+    }
+
+    //close nagadi bills
+    public function closeNagadi($id) {
+        $rows = $this->CommonModel->getDataByID('settings_bill_setup',$id);
+        $checkformaxbills = $this->BillSettingModel->getMaxActiveNagadiBills($rows['user_id']);
+        if($checkformaxbills['bill_no'] == $rows['bill_to']) {
+            $data = array('status' => 2);
+            $result = $this->CommonModel->updateData('settings_bill_setup',$id,$data);
+            if($result) {
+                redirect('BillSetting');
+            }
+        } else {
+            $this->session->set_flashdata('MSG_WARN', 'रसिद काट्न बाकी भएको यो रसिद बन्द गर्न मिलेन');
+            redirect('BillSetting');
+        }
+    }
+
+    public function closeSampati($id)
+    {
+        $rows = $this->CommonModel->getDataByID('settings_bill_setup', $id);
+        $checkformaxbills = $this->BillSettingModel->getMaxActiveSampatiBills($rows['user_id']);
+        if ($checkformaxbills['bill_no'] == $rows['bill_to']) {
+            $data = array('status' => 2);
+            $result = $this->CommonModel->updateData('settings_bill_setup', $id, $data);
+            if ($result) {
+                redirect('BillSetting');
+            }
+        } else {
+            $this->session->set_flashdata('MSG_WARN', 'रसिद काट्न बाकी भएको यो रसिद बन्द गर्न मिलेन');
+            redirect('BillSetting');
         }
     }
 

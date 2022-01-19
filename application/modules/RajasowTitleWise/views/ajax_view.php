@@ -93,10 +93,12 @@
       <td colspan="3" align="right">जम्मा </td>
       <td><?php echo $this->mylibrary->convertedcit($total_anumanit)?></td>
       <!-- total upto last month -->
-      <td><?php $total_upto_last_month = $tsampati_kar_upto_lastmonth + $bhumi_kar_upto_lastmonth + $totalupto_nagadi; echo $this->mylibrary->convertedcit($total_upto_last_month); ?> </td>
-      <td><?php $total_current_month = $tsampati_kar + $bhumi_kar_currentmonth + $totalcurrent_month; echo $this->mylibrary->convertedcit(number_format($total_current_month)); ?> </td>
+      <td><?php $total_upto_last_month = $sampati_kar_lastmonth['total'] + $bhumi_kar_lastmonth['total'] + $totalupto_nagadi; echo $this->mylibrary->convertedcit($total_upto_last_month); ?> </td>
+      
+      <td><?php $total_current_month = $sampati_kar['total'] + $bhumi_kar['total'] + $totalcurrent_month; echo $this->mylibrary->convertedcit(number_format($total_current_month)); ?> </td>
 
-      <td><?php $stotal = $total_upto_last_month + $total_current_month  ; echo $this->mylibrary->convertedcit(number_format($stotal)); ?> </td>
+      <td><?php $stotal = $total_upto_last_month + $total_current_month; 
+      echo $this->mylibrary->convertedcit(number_format($stotal)); ?> </td>
 
       <td><?php echo $this->mylibrary->convertedcit($totaldue); ?> </td>
     </tr>
