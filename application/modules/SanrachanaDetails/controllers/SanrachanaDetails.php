@@ -35,6 +35,7 @@ class SanrachanaDetails extends MY_Controller
       $data['land_owner']   = $this->CommonModel->GetLandOwnerRowByFileNo($file_no);
       $data['lists']        = $this->SanrachanaDetailsModel->GetSanrachanaDetails($file_no);
       $data['has_bill']     = check_tax_pax_for_current_fiscal_year( $file_no , current_fiscal_year());
+      //pp($data['has_bill']);
       $this->load->view('main', $data);
     }
   }
@@ -136,7 +137,9 @@ class SanrachanaDetails extends MY_Controller
         $data['landDescription']      = $this->SanrachanaDetailsModel->getLandDetails($file_no);
         $data['year']                 = $this->CommonModel->getData('settings_year');
         $data['architectstructure']   = $this->CommonModel->getWhereAll('settings_architect_structure', array('fiscal_year'=>current_fiscal_year()));
-        $data['architecttype'] = $this->CommonModel->getWhereAll('settings_architect_type', array('fiscal_year'=>current_fiscal_year()));
+        $data['architecttype']        = $this->CommonModel->getWhereAll('settings_architect_type', array('fiscal_year'=>current_fiscal_year()));
+        $data['has_bill']             = check_tax_pax_for_current_fiscal_year($file_no, current_fiscal_year());
+        
         $this->load->view('main', $data);
     } else {
         $this->session->set_flashdata('MSG_ACCESS','तपाईंको अनुमति अस्वीकृत गरिएको छ');
@@ -383,7 +386,7 @@ class SanrachanaDetails extends MY_Controller
    */
   public function EditDetails($id = NULL) {
       if($this->authlibrary->HasModulePermission($this->module_code, "ADD")){
-        print_r($data);
+      
           $id                           = $this->uri->segment(3);
           $data['page']                 = 'edit_details';
           $data['row']                  = $this->CommonModel->getDataByID('sanrachana_details',$id);
@@ -395,8 +398,6 @@ class SanrachanaDetails extends MY_Controller
           }
           $data['type_name']            = $this->CommonModel->getWhere('settings_architect_structure', array('id' => $data['row']['sanrachana_banot_kisim']));
           $data['selected_ghartype']    = $this->CommonModel->getWhere('settings_architect_structure', array('structure_type' => $data['type_name']['structure_type'],'fiscal_year' => current_fiscal_year()));
-          //pp($data['selected_ghartype']);
-          // $data['landDescription']      = $this->CommonModel->getAllDataBySelectedFields('land_description_details', 'ld_file_no', $data['row']['ls_file_no']);
           $data['landDescription']      = $this->SanrachanaDetailsModel->getLandDetails($data['row']['ls_file_no']);
           $data['year']                 = $this->CommonModel->getData('settings_year');
           $data['architectstructure']   = $this->CommonModel->getWhereAll('settings_architect_structure', array('fiscal_year' => current_fiscal_year()));
@@ -819,6 +820,22 @@ class SanrachanaDetails extends MY_Controller
           //pp($post_array);
       }
      // pp($post_array);
+    }
+  }
+
+  public function AddNewSanrachana() {
+    if ($this->authlibrary->HasModulePermission($this->module_code, "ADD")) {
+      $file_no                      = $this->uri->segment(3);
+      $data['page']                 = 'add_details';
+      $data['lo_details']           = $this->CommonModel->GetLandOwnerRowByFileNo($file_no);
+      $data['landDescription']      = $this->SanrachanaDetailsModel->getLandDetails($file_no);
+      $data['year']                 = $this->CommonModel->getData('settings_year');
+      $data['architectstructure']   = $this->CommonModel->getWhereAll('settings_architect_structure', array('fiscal_year' => current_fiscal_year()));
+      $data['architecttype']        = $this->CommonModel->getWhereAll('settings_architect_type', array('fiscal_year' => current_fiscal_year()));
+      $this->load->view('main', $data);
+    } else {
+      $this->session->set_flashdata('MSG_ACCESS', 'तपाईंको अनुमति अस्वीकृत गरिएको छ');
+      redirect('Dashboard');
     }
   }
 }//end of class

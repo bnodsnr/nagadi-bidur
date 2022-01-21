@@ -826,7 +826,6 @@ class SampatiKarRasid extends MX_Controller
             $profile                        = $this->CommonModel->getDataBySelectedFields('sampati_kar_bhumi_kar_bill_details', 'bill_no', $bill_no);
             $fileNo                         = $profile['nb_file_no'];
             $data['land_owner_details']     = $this->SampatiKarRasidModel->getLandOwnerDetails($fileNo);
-           
             $data['state']                  = $this->CommonModel->getDataByID('provinces', $data['land_owner_details']['lo_state']);
             $data['district']               = $this->CommonModel->getDataByID('settings_district', $data['land_owner_details']['lo_district']);
             $data['gapa']                   = $this->CommonModel->getDataByID('settings_vdc_municipality', $data['land_owner_details']['lo_gapa_napa']);
@@ -835,7 +834,6 @@ class SampatiKarRasid extends MX_Controller
             $data['user']                   = $this->CommonModel->getCurrentUser($this->session->userdata('PRJ_USER_ID'));
             $data['billcount']              = $this->SampatiKarRasidModel->totalSamptiKarBillDetails();
             $data['Billsdetails']           = $this->SampatiKarRasidModel->GetCancelBillDetails($bill_no);
-           // pp($data['Billsdetails']);
             $data['kar_details']            = $this->SampatiKarRasidModel->getTotalBillPreview($bill_no);
             if($data['kar_details']['status'] == 2){
             $data['cancel_reason'] = $this->CommonModel->getDataBySelectedFields('sampati_rasid_cancel_reason','bill_no', $data['kar_details']['bill_no']);
@@ -850,7 +848,7 @@ class SampatiKarRasid extends MX_Controller
         if($this->authlibrary->HasModulePermission($this->module_code, "VIEW")){
             $fy = str_replace("-", '/', $fiscal_year);
            // $profile                        = $this->CommonModel->getWhere('sampati_kar_bhumi_kar_bill_details', array('bill_no' => $bill_no, 'fiscal_year' => $fy));
-            $fileNo                         = $profile['nb_file_no'];
+            //$fileNo                         = $profile['nb_file_no'];
             $data['land_owner_details']     = $this->SampatiKarRasidModel->getLandOwnerDetails($file_no);
             $data['state']                  = $this->CommonModel->getDataByID('provinces', $data['land_owner_details']['lo_state']);
             $data['district']               = $this->CommonModel->getDataByID('settings_district', $data['land_owner_details']['lo_district']);
@@ -861,10 +859,24 @@ class SampatiKarRasid extends MX_Controller
             $data['billcount']              = $this->SampatiKarRasidModel->totalSamptiKarBillDetails();
             $data['landdetails']            = $this->SampatiKarRasidModel->getbillPreview($bill_no, $file_no, $fy);
             $data['kar_details']            = $this->CommonModel->getWhere('sampati_kar_bhumi_kar_bill_details',array('fiscal_year' => $fy,'bill_no' => $bill_no,'nb_file_no' => $file_no));
-            
             $this->load->view('bills_preview', $data);
         } else {
             redirect('dashboard');
         }
+    }
+
+    //get new bills
+    public function newPreviewBills($bill_no,$file_no,$fiscal_year) {
+        $fy = str_replace("-", '/', $fiscal_year);
+        $data['land_owner_details']     = $this->SampatiKarRasidModel->getLandOwnerDetails($file_no);
+        $data['landdetails']            = $this->SampatiKarRasidModel->searchBills($bill_no,$file_no,$fy);
+        $data['state']                  = $this->CommonModel->getDataByID('provinces', $data['land_owner_details']['lo_state']);
+        $data['district']               = $this->CommonModel->getDataByID('settings_district', $data['land_owner_details']['lo_district']);
+        $data['gapa']                   = $this->CommonModel->getDataByID('settings_vdc_municipality', $data['land_owner_details']['lo_gapa_napa']);
+        $data['bill_details']           = $this->CommonModel->getWhere('sampati_kar_bhumi_kar_bill_details', array('fiscal_year' => $fy, 'bill_no' => $bill_no, 'nb_file_no' => $file_no));
+        $data['user']                   = $this->CommonModel->getCurrentUser($this->session->userdata('PRJ_USER_ID'));
+        $data['billcount']              = $this->SampatiKarRasidModel->totalSamptiKarBillDetails();
+        $data['kar_details']            = $this->CommonModel->getWhere('sampati_kar_bhumi_kar_bill_details', array('fiscal_year' => $fy, 'bill_no' => $bill_no, 'nb_file_no' => $file_no));
+        $this->load->view('bills_preview', $data);
     }
 }//end of class

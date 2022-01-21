@@ -1190,7 +1190,129 @@ class SampatiKarRasidModel extends CI_Model
                 LEFT JOIN settings_architect_type at ON at.id = s.sanrachana_prakar
                 WHERE p.current_voucher_id = '$bill_no' and p.ld_file_no = '$file_no' and buy_sell_status <> 2";
         }
-            
+                
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    //get bill preview
+    public function getBillPreviewN($bill_no, $file_no = NULL) {
+        $sql = "SELECT 
+                p.old_gapa_napa,
+                p.old_ward,
+                p.old_gapa_napa,
+                p.present_gapa_napa,
+                p.present_ward,
+                p.land_area_type as lat,
+                p.road_name,
+                p.land_category,
+                p.nn_number,
+                p.k_number,
+                p.a_ropani,
+                p.a_ana,
+                p.a_dam,
+                p.a_paisa,
+                p.total_square_feet,
+                p.k_land_rate,
+                p.t_rate,
+                p.ld_file_no,
+                s.*,
+                lat.id,
+                lat.land_area_type,
+                lc.id,lc.category,
+                op.id,op.old_name,op.present_name,
+                r.road_name as rm,
+                at.architect_type,
+                st.structure_type
+                FROM land_description_details p
+                LEFT JOIN
+                (
+                  SELECT
+                    id as sanrachana_id,
+                    sanrachana_prakar,
+                    sanrachana_banot_kisim, 
+                    sanrachana_usages, 
+                    sanrachana_floor, 
+                    sanrachana_ground_housing_area_sqft, 
+                    contructed_year, 
+                    sanrachana_dep_rate,
+                    sanrachana_khud_amount,
+                    net_tax_amount,
+                    r_bhumi_area,
+                    r_bhumi_kar,
+                    k_no
+                    FROM sanrachana_details
+                    WHERE ls_file_no  ='$file_no'
+                ) s
+                ON s.k_no = p.k_number 
+                LEFT JOIN settings_land_area_type lat ON lat.id = p.land_area_type
+                LEFT JOIN land_category lc ON lc.id = p.land_area_type
+                LEFT JOIN settings_old_and_present op ON op.id = p.old_ward
+                LEFT JOIN settings_road r ON r.id = p.road_name
+                LEFT JOIN settings_architect_structure st ON st.id = s.sanrachana_banot_kisim
+                LEFT JOIN settings_architect_type at ON at.id = s.sanrachana_prakar
+                WHERE p.current_voucher_id = '$bill_no' and p.ld_file_no = '$file_no'";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    //search bill
+    public function searchBills($bill_no, $file_no = NULL,$fiscal_year) {
+        $sql = "SELECT 
+                p.old_gapa_napa,
+                p.old_ward,
+                p.old_gapa_napa,
+                p.present_gapa_napa,
+                p.present_ward,
+                p.land_area_type as lat,
+                p.road_name,
+                p.land_category,
+                p.nn_number,
+                p.k_number,
+                p.a_ropani,
+                p.a_ana,
+                p.a_dam,
+                p.a_paisa,
+                p.total_square_feet,
+                p.k_land_rate,
+                p.t_rate,
+                p.ld_file_no,
+                s.*,
+                lat.id,
+                lat.land_area_type,
+                lc.id,lc.category,
+                op.id,op.old_name,op.present_name,
+                r.road_name as rm,
+                at.architect_type,
+                st.structure_type
+                FROM land_description_details p
+                LEFT JOIN
+                (
+                  SELECT
+                    id as sanrachana_id,
+                    sanrachana_prakar,
+                    sanrachana_banot_kisim, 
+                    sanrachana_usages, 
+                    sanrachana_floor, 
+                    sanrachana_ground_housing_area_sqft, 
+                    contructed_year, 
+                    sanrachana_dep_rate,
+                    sanrachana_khud_amount,
+                    net_tax_amount,
+                    r_bhumi_area,
+                    r_bhumi_kar,
+                    k_no
+                    FROM sanrachana_details
+                    WHERE ls_file_no  ='$file_no'
+                ) s
+                ON s.k_no = p.k_number 
+                LEFT JOIN settings_land_area_type lat ON lat.id = p.land_area_type
+                LEFT JOIN land_category lc ON lc.id = p.land_area_type
+                LEFT JOIN settings_old_and_present op ON op.id = p.old_ward
+                LEFT JOIN settings_road r ON r.id = p.road_name
+                LEFT JOIN settings_architect_structure st ON st.id = s.sanrachana_banot_kisim
+                LEFT JOIN settings_architect_type at ON at.id = s.sanrachana_prakar
+                WHERE p.current_voucher_id = '$bill_no' and p.ld_file_no = '$file_no' and p.fiscal_year ='$fiscal_year'";
         $query = $this->db->query($sql);
         return $query->result_array();
     }

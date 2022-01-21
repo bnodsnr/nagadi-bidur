@@ -183,7 +183,7 @@
 
                 res += '<a class="dropdown-item" href="<?php echo base_url() ?>LandDetails/veiwLandDescription/' + row.file_no_en + '"><i class="fa  fa-hand-o-right"></i> जग्गाको विवरण</a>' +
                   '<a class="dropdown-item" href="<?php echo base_url() ?>SanrachanaDetails/veiwDetails/' + row.file_no_en + '"><i class="fa  fa-hand-o-right"></i> संरचनाको विवरण</a>' +
-                  '<a class="dropdown-item" href="<?php echo base_url() ?>PersonalProfile/editProfile/' + row.id + '"><i class="fa  fa-hand-o-right"></i> विवरण सम्पादन गर्नुहोस्</a>' +
+                  '<a class="dropdown-item" href="<?php echo base_url() ?>PersonalProfile/editProfile/' + row.id + '"><i class="fa  fa-hand-o-right"></i> प्रोफाइल सम्पादन </a>' +
 
                   '<a class="dropdown-item" href="<?php echo base_url() ?>PersonalProfile/transferProfile/' + row.file_no_en + '"><i class="fa  fa-hand-o-right"></i> एकाघरमा नामसारी</a>';
               <?php } ?>

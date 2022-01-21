@@ -26,6 +26,8 @@
                         भोतिक संरचनाको विवरण : जग्गाधनी - <?php echo $lo_details['land_owner_name_np']?> /
                         जग्गाधनिको क्र.स नम्बर :<?php echo $lo_details['file_no']?>
                     </header>
+
+                    <div> </div>
                     <div class="card-body">
                         <div class="notification"></div>
                         <div class="valid_errors"></div>

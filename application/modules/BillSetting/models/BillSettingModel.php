@@ -78,4 +78,39 @@ class BillSettingModel extends CI_Model {
 		return $query->row_array();
 	}
 
+	public function getBillDataLastFy($type)
+	{
+		$this->db->select('t1.*,t2.userid,t2.name,t2.ward');
+		$this->db->from('settings_bill_setup t1');
+		$this->db->join('users t2', 't2.userid = t1.user_id', 'left');
+		$this->db->where('t1.bill_type', $type);
+		$this->db->where('t1.fiscal_year', '2077/078');
+		$this->db->order_by('ward', 'ASC');
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+	public function getLastActiveNagadiBills($userid)
+	{
+		$this->db->select('bill_no')->from('nagadi_rasid');
+		$this->db->where('added_by', $userid);
+		$this->db->where('fiscal_year','2077/078');
+		$this->db->order_by('id', "DESC");
+		$this->db->limit(1);
+		$query = $this->db->get();
+		return $query->row_array();
+	}
+
+	public function getLastActiveSampatiBills($userid)
+	{
+		$this->db->select('bill_no')->from('sampati_kar_bhumi_kar_bill_details');
+		$this->db->where('added_by', $userid);
+		$this->db->where('fiscal_year', '2077/078');
+		$this->db->order_by('id', "DESC");
+		$this->db->limit(1);
+		$query = $this->db->get();
+		return $query->row_array();
+	}
+	
+
 }

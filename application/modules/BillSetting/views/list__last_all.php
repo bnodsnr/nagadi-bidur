@@ -10,7 +10,7 @@
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="<?php echo base_url() ?>"><i class="fa fa-home"></i> गृहपृष्ठ</a></li>
         <li class="breadcrumb-item"><a href="<?php echo base_url() ?>BillSetting"> रसिद विवरण </a></li>
-        <li class="breadcrumb-item"><a href="<?php echo base_url() ?>BillSetting/viewPreviousFy"> गत आर्थिक वर्षको विवरण हेर्नुहोस</a></li>
+        <li class="breadcrumb-item"><a href="<?php echo base_url() ?>BillSetting"> गत आर्थिक वर्षको विवरण हेर्नुहोस</a></li>
       </ol>
     </nav>
     <!-- page start-->
@@ -48,11 +48,11 @@
             <div class="tab-content" id="pills-tabContent">
               <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                 <div class="alert alert-dark" role="alert">
-                  <h3 class="text-center">नगदी रसिद (आ .वा: <?php echo $this->mylibrary->convertedcit(get_current_fiscal_year()) ?>) </h3>
+                  <h3 class="text-center">नगदी रसिद (आ .वा: <?php echo $this->mylibrary->convertedcit('2077/078') ?>) </h3>
                 </div>
 
                 <?php if ($this->authlibrary->HasModulePermission('BILL-SETTING', "ADD")) { ?>
-                  <a class="btn btn-secondary btn-sm mb-2" style="color:#FFF" href="<?php echo base_url() ?>BillSetting/add"><i class="fa fa-plus"></i> नयाँ थप्नुहोस् </a>
+                  <a class="btn btn-secondary btn-sm mb-2" style="color:#FFF" href="<?php echo base_url() ?>BillSetting/exportToPDF"><i class="fa fa-plus"></i> Print </a>
                 <?php } ?>
 
                 <table class=" table table-bordered table-striped">
@@ -62,9 +62,10 @@
                       <th>वडा नं </th>
                       <th>रसिद विवरण</th>
                       <th>रसिद अवस्था</th>
-                      <?php if ($this->authlibrary->HasModulePermission('BILL-SETTING', "EDIT") || $this->authlibrary->HasModulePermission('BILL-SETTING', "DELETE")) { ?>
-                        <th class="hidden-phone">.....</th>
-                      <?php } ?>
+                      <th>आ. व.</th>
+                      <!-- <th>
+                        
+                      </th> -->
                     </tr>
                   </thead>
 
@@ -72,33 +73,26 @@
                     <?php if (!empty($nagadi_bills)) :
                       $i = 1;
                       foreach ($nagadi_bills as $key => $value) : ?>
-                        <tr class="gradeX" <?php if ($value['status'] == 1) {
-                                              echo 'style="background-color:green; color:#fff"';
-                                            } ?>>
+                        <tr class="gradeX">
                           <td><?php echo $this->mylibrary->convertedcit($i++) ?></td>
                           <td><?php if ($value['ward'] == 0) {
                                 echo "नगरपालिका";
                               } else {
                                 echo 'वडा नं ' . $this->mylibrary->convertedcit($value['ward']);
                               } ?>( <?php echo $value['name'] ?>)</td>
-                          <td><?php echo $value['bill_from'] . '-' . $value['bill_to'] ?></td>
+                          <td><?php echo $this->mylibrary->convertedcit($value['bill_from']) . '-' . $this->mylibrary->convertedcit($value['bill_to']) ?></td>
                           <td><?php if ($value['status'] == 1) {
                                 echo 'सक्रिय';
                               } else {
                                 echo 'निश्क्रिय';
                               } ?></td>
-                          <?php if ($this->authlibrary->HasModulePermission('BILL-SETTING', "EDIT") || $this->authlibrary->HasModulePermission('BILL-SETTING', "DELETE")) { ?>
-                            <td class="center hidden-phone">
-                              <?php if ($this->authlibrary->HasModulePermission('BILL-SETTING', "DELETE")) { ?>
-                                <?php if ($value['status'] == 1) {
-                                ?>
-                                  <a href="<?php echo base_url() ?>BillSetting/closeNagadi/<?php echo $value['id'] ?>" class="btn btn-secondary btn-sm" title="close bill" onclick="return confirm('Are you sure want to close?')"><i class='fa fa-times'></i></a>
-
-                                  <button data-url='<?php echo base_url() ?>BillSetting/delete' class='btn btn-danger btn-sm btn-delete' data-id="<?php echo $value['id'] ?>"><i class='fa fa-trash-o'></i></button>
-                                <?php } ?>
-                              <?php } ?>
-                            </td>
-                          <?php } ?>
+                          <td><?php echo $this->mylibrary->convertedcit($value['fiscal_year']) ?></td>
+                          <!-- <td> -->
+                          <?php
+                          // $bill_due = $this->BillSettingModel->getLastActiveNagadiBills($value['user_id']);
+                          //echo $bill_due['bill_no'];
+                          ?>
+                          <!-- </td> -->
                         </tr>
                       <?php endforeach;
                     else : ?>
@@ -122,7 +116,7 @@
                 </div>
 
                 <?php if ($this->authlibrary->HasModulePermission('BILL-SETTING', "ADD")) { ?>
-                  <a class="btn btn-secondary btn-sm mb-2" style="color:#FFF" href="<?php echo base_url() ?>BillSetting/add"><i class="fa fa-plus"></i> नयाँ थप्नुहोस् </a>
+                  <a class="btn btn-secondary btn-sm mb-2" style="color:#FFF" href="<?php echo base_url() ?>BillSetting/exportJSampatiToPDF"><i class="fa fa-plus"></i> Print </a>
                 <?php } ?>
 
                 <table class=" table table-bordered table-striped">
@@ -131,10 +125,9 @@
                       <th text-aligh="right">#</th>
                       <th>वडा नं </th>
                       <th>रसिद विवरण</th>
-                      <th>रसिद अवस्था</th>
-                      <?php if ($this->authlibrary->HasModulePermission('BILL-SETTING', "EDIT") || $this->authlibrary->HasModulePermission('BILL-SETTING', "DELETE")) { ?>
-                        <th class="hidden-phone">.....</th>
-                      <?php } ?>
+                      <!-- <th>रसिद अवस्था</th> -->
+                      <th>आ. व.</th>
+
                     </tr>
                   </thead>
 
@@ -151,24 +144,14 @@
                               } else {
                                 echo 'वडा नं ' . $this->mylibrary->convertedcit($value['ward']);
                               } ?>( <?php echo $value['name'] ?>)</td>
-                          <td><?php echo $value['bill_from'] . '-' . $value['bill_to'] ?></td>
-                          <td><?php if ($value['status'] == 1) {
+                          <td><?php echo $this->mylibrary->convertedcit($value['bill_from']) . '-' . $this->mylibrary->convertedcit($value['bill_to']) ?></td>
+                          <!-- <td><?php if ($value['status'] == 1) {
                                 echo 'सक्रिय';
                               } else {
                                 echo 'निश्क्रिय';
-                              } ?></td>
-                          <?php if ($this->authlibrary->HasModulePermission('BILL-SETTING', "EDIT") || $this->authlibrary->HasModulePermission('BILL-SETTING', "DELETE")) { ?>
-                            <td class="center hidden-phone">
-                              <?php if ($this->authlibrary->HasModulePermission('BILL-SETTING', "DELETE")) { ?>
-                                <?php if ($value['status'] == 1) {
-                                ?>
-                                  <a href="<?php echo base_url() ?>BillSetting/closeSampati/<?php echo $value['id'] ?>" class="btn btn-secondary btn-sm" title="close bill" onclick="return confirm('Are you sure want to close?')"><i class='fa fa-times'></i></a>
+                              } ?></td> -->
+                          <td><?php echo $this->mylibrary->convertedcit($value['fiscal_year']) ?></td>
 
-                                  <button data-url='<?php echo base_url() ?>BillSetting/delete' class='btn btn-danger btn-sm btn-delete' data-id="<?php echo $value['id'] ?>"><i class='fa fa-trash-o'></i></button>
-                                <?php } ?>
-                              <?php } ?>
-                            </td>
-                          <?php } ?>
                         </tr>
                       <?php endforeach;
                     else : ?>

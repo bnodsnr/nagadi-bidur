@@ -176,5 +176,70 @@ class BillSetting extends MX_Controller
         }
     }
 
+
+    public function viewPreviousFy()
+    {
+        if ($this->authlibrary->HasModulePermission($this->module_code, "VIEW")) {
+            $data['page']           = 'list__last_all';
+            $data['fiscal_year']    = $this->CommonModel->getData('fiscal_year', 'DESC');
+            $data['nagadi_bills']   = $this->BillSettingModel->getBillDataLastFy(1);
+            $data['sampati_bills']  = $this->BillSettingModel->getBillDataLastFy(2);
+            $data['nagadiCheck']    = check_bill_no_exits();
+            $data['reserved_bills'] = $this->BillSettingModel->getReservedBills('reserve_bills');
+            $this->load->view('main', $data);
+        } else {
+            $this->session->set_flashdata('MSG_ACCESS', 'तपाईंको अनुमति अस्वीकृत गरिएको छ');
+            redirect('Dashboard');
+        }
+    }
+
+    public function exportToPDF()
+    {
+        $mpdf                               = new \Mpdf\Mpdf(['mode' => 'utf-8']);
+        $mpdf->showImageErrors              = true;
+        $mpdf->autoPageBreak                = true;
+        $mpdf->shrink_tables_to_fit         = 1;
+        $mpdf->AddPage();
+        $mpdf->use_kwt                      = true;
+        $mpdf->allow_charset_conversion     = true;
+        $mpdf->curlAllowUnsafeSslRequests   = true;
+        $mpdf->charset_in                   = 'iso-8859-4';
+        $data['title']                      = '';
+
+        $data['fiscal_year']    = $this->CommonModel->getData('fiscal_year', 'DESC');
+        $data['nagadi_bills']   = $this->BillSettingModel->getBillDataLastFy(1);
+        $data['sampati_bills']  = $this->BillSettingModel->getBillDataLastFy(2);
+        $data['nagadiCheck']    = check_bill_no_exits();
+        $data['reserved_bills'] = $this->BillSettingModel->getReservedBills('reserve_bills');
+
+        $html                               = $this->load->view('print', $data, true);
+        $mpdf->WriteHTML($html);
+        $mpdf->Output(); // opens in browser
+    }
+
+    public function exportJSampatiToPDF()
+    {
+        $mpdf                               = new \Mpdf\Mpdf(['mode' => 'utf-8']);
+        $mpdf->showImageErrors              = true;
+        $mpdf->autoPageBreak                = true;
+        $mpdf->shrink_tables_to_fit         = 1;
+        $mpdf->AddPage();
+        $mpdf->use_kwt                      = true;
+        $mpdf->allow_charset_conversion     = true;
+        $mpdf->curlAllowUnsafeSslRequests   = true;
+        $mpdf->charset_in                   = 'iso-8859-4';
+        $data['title']                      = '';
+
+        $data['fiscal_year']    = $this->CommonModel->getData('fiscal_year', 'DESC');
+        $data['nagadi_bills']   = $this->BillSettingModel->getBillDataLastFy(1);
+        $data['sampati_bills']  = $this->BillSettingModel->getBillDataLastFy(2);
+        $data['nagadiCheck']    = check_bill_no_exits();
+        $data['reserved_bills'] = $this->BillSettingModel->getReservedBills('reserve_bills');
+
+        $html                               = $this->load->view('print_sampati', $data, true);
+        $mpdf->WriteHTML($html);
+        $mpdf->Output(); // opens in browser
+    }
+
    
 }
