@@ -514,8 +514,8 @@ $config['csrf_exclude_uris'] =  array(
 									'LandDetails/veiwLandDescription',
 									'LandDetails/removeKitta',
 									'LandDetails/viewBadarReason',
-							        'RajasowTitle/editTopicNo'
-							
+							    'RajasowTitle/editTopicNo',
+									//'SanrachanaDetails/viewFloorDetails',
 								);
 
 /*

@@ -49,8 +49,8 @@
                                         <select name="k_no" class="from-control dd_select" id="k_no" required>
                                           <option value="">छान्नुहोस्</option>
                                             <?php 
-                                    if(!empty($landDescription)) :
-                                    foreach ($landDescription as $key => $ld) : ?>
+                                        if(!empty($landDescription)) :
+                                        foreach ($landDescription as $key => $ld) : ?>
                                             <option id="<?php echo  $ld['k_number'] .'_'.$ld['road_name'] .'_'. $ld['nn_number']?>" value="<?php echo  $ld['k_number'] ?>" <?php if($row['k_no'] == $ld['k_number']) {echo 'selected';}?>><?php echo  $ld['k_number'] . ' (' . $ld['setting_road_name'] . ')'?>
                                             </option>
                                             <?php endforeach; endif;?>
@@ -145,7 +145,7 @@
                                         <select name="sanrachana_usages" class="from-control dd_select " id="land_usage"
                                             required>
                                          
-                                            	<option value="निजी" <?php if($row['sanrachana_usages']=='निजी'){echo 'selected';}?>>निजी</option>
+                                            <option value="निजी" <?php if($row['sanrachana_usages']=='निजी'){echo 'selected';}?>>निजी</option>
 											<option value="भाडा" <?php if($row['sanrachana_usages']=='भाडा'){echo 'selected';}?>>भाडा</option>
 											<option value="अन्य" <?php if($row['sanrachana_usages']=='अन्य'){echo 'selected';}?>>अन्य</option>
                                            

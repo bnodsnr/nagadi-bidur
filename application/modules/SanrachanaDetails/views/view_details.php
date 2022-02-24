@@ -32,13 +32,15 @@
                <?php if ($this->authlibrary->HasModulePermission('PERSONAL-PROFILE', "ADD")) { ?>
                  <?php if (empty($has_bill)) { ?>
                    <div class="float-right position">
+                     <a class="btn btn-dark" href="<?php echo base_url() ?>SanrachanaDetails/AddSancrachanaByTalla/<?php echo $this->uri->segment(3) ?>" style="color:#FFF;margin-top: 2px;"><i class="fa fa-plus"></i> तल्ला आनुसार सम्पति मूल्याङ्कन </a>
+
                      <a class="btn btn-primary " href="<?php echo base_url() ?>SanrachanaDetails/AddDetails/<?php echo $this->uri->segment(3) ?>" style="color:#FFF;margin-top: 2px;"><i class="fa fa-plus"></i> नयाँ थप्नुहोस् </a>
 
                      <a class="btn btn-warning " href="<?php echo base_url() ?>SampatiKarRasid/CreateBills/<?php echo $land_owner['file_no'] ?>" target="_blank" style="color:#FFF;margin-top: 2px;"> रशिद काट्नुहोस </a>
 
                    </div>
                  <?php   } else { ?>
-                   <a class="btn btn-primary " href="<?php echo base_url() ?>SanrachanaDetails/AddDetails/<?php echo $this->uri->segment(3) ?>" style="color:#FFF;margin-top: 2px;"><i class="fa fa-plus"></i> नयाँ थप्नुहोस् </a>
+                   <a class="btn btn-danger " href="<?php echo base_url() ?>SanrachanaDetails/AddDetails/<?php echo $this->uri->segment(3) ?>" style="color:#FFF;margin-top: 2px;"><i class="fa fa-plus"></i> छुटेको संरचना थप्नुहोस् </a>
                <?php }
                 } ?>
              </div>
@@ -107,43 +109,46 @@
                </thead>
                <tbody>
                  <?php $i = 1;
-                  if (!empty($lists)) : foreach ($lists as $list) : ?>
-                     <tr>
-                       <td>
-                         <?php if ($has_bill != 1) { ?>
+                  if (!empty($lists)) : foreach ($lists as $list) : 
+                  $floorDetails = $this->CommonModel->getWhereAll('floor_details',array('sanrachana_id' => $list['id']));
+                  ?>
+                    <tr>
+                      <td>
+                         <?php if (empty($has_bill)) { ?>
                            <div class="dropdown">
                              <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">सम्पादन कार्य</button>
                              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                               <a class="dropdown-item" href="<?php echo base_url() . 'SanrachanaDetails/EditDetails/' . $list['id'] ?>">सम्पादन गर्नुहोस्
-
+                               <a class="dropdown-item" href="<?php echo base_url() . 'SanrachanaDetails/EditDetails/' . $list['id'] ?>">सम्पादन गर्नुहोस्</a>
                              </div>
                            </div>
+                           
                          <?php } else { ?>
                            <p class="label label-danger">कार्य उपलब्ध छैन</p>
                          <?php } ?>
-
-                       </td>
-                       <td><?php echo $this->mylibrary->convertedcit($i++) ?></td>
-                       <td><?php echo $this->mylibrary->convertedcit($list['k_no']) ?></td>
-                       <td><?php echo $this->mylibrary->convertedcit($list['toal_land_area']) ?></td>
-                       <td><?php echo $this->mylibrary->convertedcit($list['total_land_area_sqft']) ?></td>
-                       <td><?php echo $this->mylibrary->convertedcit($list['total_land_min_amount']) ?></td>
-                       <td><?php echo $this->mylibrary->convertedcit($list['sanrachana_n_no']) ?></td>
-                       <td><?php echo $this->mylibrary->convertedcit($list['architect_type']) ?></td>
-                       <td><?php echo $this->mylibrary->convertedcit($list['st']) ?></td>
-                       <td><?php echo $this->mylibrary->convertedcit($list['sanrachana_usages']) ?></td>
-                       <td><?php echo $this->mylibrary->convertedcit($list['sanrachana_floor']) ?></td>
-                       <td><?php echo $this->mylibrary->convertedcit($list['sanrachana_ground_lenth']) ?> * <?php echo $this->mylibrary->convertedcit($list['sanrachana_ground_width']) ?></td>
-                       <td><?php echo $this->mylibrary->convertedcit($list['sanrachana_ground_area_sqft']) ?></td>
-                       <td><?php echo $this->mylibrary->convertedcit($list['contructed_year']) ?></td>
-                       <td><?php echo $this->mylibrary->convertedcit($list['sanrachana_dep_rate']) ?></td>
-                       <td><?php echo $this->mylibrary->convertedcit($list['sanrachana_min_amount']) ?></td>
-                       <td><?php echo $this->mylibrary->convertedcit($list['sanrachana_kubul_amount']) ?></td>
-                       <td><?php echo $this->mylibrary->convertedcit($list['sanrachana_khud_amount']) ?></td>
-                       <!-- <td><?php //echo $this->mylibrary->convertedcit($list['sanrachana_ground_area_ropani'])
-                                ?></td> -->
-                       <td><?php
-                            $sqfeet = $list['sanrachana_ground_area_ropani'];
+                          <?php if($list['is_feature'] == 1 ) { ?>
+                            <a class="btn btn-info" href="<?php echo base_url() . 'SanrachanaDetails/EditDetails/' . $list['id'] ?>">सम्पादन गर्नुहोस्</a>
+                          <?php } ?>
+                          <a type="button" class="btn-primary btn-sm mt-2" href="<?php echo base_url()?>SanrachanaDetails/viewFloorDetails/<?php echo $list['id']?>">तल्ला अनुसार विवरण</a>
+                      </td>
+                      <td><?php echo $this->mylibrary->convertedcit($i++) ?></td>
+                      <td><?php echo $this->mylibrary->convertedcit($list['k_no']) ?></td>
+                      <td><?php echo $this->mylibrary->convertedcit($list['toal_land_area']) ?></td>
+                      <td><?php echo $this->mylibrary->convertedcit($list['total_land_area_sqft']) ?></td>
+                      <td><?php echo $this->mylibrary->convertedcit($list['total_land_min_amount']) ?></td>
+                      <td><?php echo $this->mylibrary->convertedcit($list['sanrachana_n_no']) ?></td>
+                      <td><?php echo $this->mylibrary->convertedcit($list['architect_type']) ?></td>
+                      <td><?php echo $this->mylibrary->convertedcit($list['st']) ?></td>
+                      <td><?php echo $this->mylibrary->convertedcit($list['sanrachana_usages']) ?></td>
+                      <td><?php echo $this->mylibrary->convertedcit($list['sanrachana_floor']) ?></td>
+                      <td><?php echo $this->mylibrary->convertedcit($list['sanrachana_ground_lenth']) ?> * <?php echo $this->mylibrary->convertedcit($list['sanrachana_ground_width']) ?></td>
+                      <td><?php echo $this->mylibrary->convertedcit($list['sanrachana_ground_housing_area_sqft']) ?></td>
+                      <td><?php echo $this->mylibrary->convertedcit($list['contructed_year']) ?></td>
+                      <td><?php echo $this->mylibrary->convertedcit($list['sanrachana_dep_rate']) ?></td>
+                      <td><?php echo $this->mylibrary->convertedcit($list['sanrachana_min_amount']) ?></td>
+                      <td><?php echo $this->mylibrary->convertedcit($list['sanrachana_kubul_amount']) ?></td>
+                      <td><?php echo $this->mylibrary->convertedcit($list['sanrachana_khud_amount']) ?></td>
+                      <td><?php
+                            $sqfeet = $list['sanrachana_ground_housing_area_sqft'];
                             echo $this->mylibrary->convertedcit($sqfeet) ?></td>
                        <td><?php echo $this->mylibrary->convertedcit($list['sanrachana_land_tax_amount']) ?></td>
                        <td><?php echo $this->mylibrary->convertedcit($list['net_tax_amount']) ?></td>

@@ -2,9 +2,9 @@
 /**
   * This class create profile for business owner.
 */
-require_once FCPATH.'/vendor/autoload.php';
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+// require_once FCPATH.'/vendor/autoload.php';
+// use PhpOffice\PhpSpreadsheet\Spreadsheet;
+// use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class SanrachanaDetails extends MY_Controller
 {
   /**
@@ -122,8 +122,6 @@ class SanrachanaDetails extends MY_Controller
           exit('HTTPS!!');
       }
   }
-
-
   /**
     * This function on view land details.
     * @param  varchar $file_no
@@ -163,14 +161,9 @@ class SanrachanaDetails extends MY_Controller
         $road_name = $this->input->post('road_name');
         $nn_number = $this->input->post('nn_number');
         $file_no = $this->input->post('file_no');
-        // echo $file_no;
-        // exit;
         $check_if_has_sanrachana = $this->SanrachanaDetailsModel->getSanrachanaByDKNo($k_no,$file_no);
         $data = $this->SanrachanaDetailsModel->getLandDescriptionByKittaNo($k_no, $road_name, $nn_number, $file_no);
         $sanrachana_details = $this->SanrachanaDetailsModel->checkSanrachanaDetails($k_no, $file_no);
-
-        //pp($data);
-        //pp($data);
         if(!empty($check_if_has_sanrachana)) {
           $land_area_sqft = $check_if_has_sanrachana['r_bhumi_area'];
         } else {
@@ -277,7 +270,7 @@ class SanrachanaDetails extends MY_Controller
         $net_tax_amount                               = $this->input->post('net_tax_amount');
         $ls_file_no                                   = $this->input->post('ls_file_no');
         $r_bhumi_area                                 = $this->input->post('bhumi_kar_area');
-        $r_bhumi_kar                                  = $this->input->post('bhumi_kar_amount');
+        $is_feature                                   = $this->input->post('is_feature');
 
         $this->form_validation->set_rules('ls_file_no',     'साबिक गा.पा/न.पा', 'required');
         $this->form_validation->set_rules('k_no',     'संरचना रहेको कि.नं', 'required');
@@ -345,6 +338,7 @@ class SanrachanaDetails extends MY_Controller
           'modified_by'                             => '', 
           'r_bhumi_area'                            => $r_bhumi_area,
           'r_bhumi_kar'                             => $r_bhumi_kar,
+          'is_feature'                              => $is_feature,
           'fiscal_year'                             => current_fiscal_year(),
         );
        
@@ -385,17 +379,16 @@ class SanrachanaDetails extends MY_Controller
     * @return void 
    */
   public function EditDetails($id = NULL) {
-      if($this->authlibrary->HasModulePermission($this->module_code, "ADD")){
-      
+      if($this->authlibrary->HasModulePermission($this->module_code, "EDIT")){
           $id                           = $this->uri->segment(3);
           $data['page']                 = 'edit_details';
           $data['row']                  = $this->CommonModel->getDataByID('sanrachana_details',$id);
           $data['lo_details']           = $this->CommonModel->GetLandOwnerRowByFileNo($data['row']['ls_file_no']);
           $data['has_bill']             = check_tax_pax_for_current_fiscal_year( $data['row']['ls_file_no'] , current_fiscal_year());
-          if($data['has_bill'] == 1 ) {
-            $this->session->set_flashdata("MSG_SUCCESS",'रसिद काटिसकेको सम्पादन कार्य उपलब्ध छैन');
-            redirect('SanrachanaDetails/veiwDetails/'.$data['row']['ls_file_no']);
-          }
+          // if($data['has_bill'] == 1 ) {
+          //   $this->session->set_flashdata("MSG_SUCCESS",'रसिद काटिसकेको सम्पादन कार्य उपलब्ध छैन');
+          //   redirect('SanrachanaDetails/veiwDetails/'.$data['row']['ls_file_no']);
+          // }
           $data['type_name']            = $this->CommonModel->getWhere('settings_architect_structure', array('id' => $data['row']['sanrachana_banot_kisim']));
           $data['selected_ghartype']    = $this->CommonModel->getWhere('settings_architect_structure', array('structure_type' => $data['type_name']['structure_type'],'fiscal_year' => current_fiscal_year()));
           $data['landDescription']      = $this->SanrachanaDetailsModel->getLandDetails($data['row']['ls_file_no']);
@@ -515,6 +508,8 @@ class SanrachanaDetails extends MY_Controller
         //pp($post_array);
         $result = $this->CommonModel->updateData('sanrachana_details',$id,$post_array);
         if($result) {
+
+          
           $response = array(
                   'status'      => 'success',
                   'data'         => "सफलतापूर्वक सम्मिलित गरियो",
@@ -837,6 +832,371 @@ class SanrachanaDetails extends MY_Controller
       $this->session->set_flashdata('MSG_ACCESS', 'तपाईंको अनुमति अस्वीकृत गरिएको छ');
       redirect('Dashboard');
     }
+  }
+
+  // --------------------------------------------------------
+  // तल्ला आनुसर
+  public function AddSancrachanaByTalla($fileNo) {
+     if($this->authlibrary->HasModulePermission($this->module_code, "ADD")){
+        $file_no = $this->uri->segment(3);
+        $data['page']                 = 'add_details_by_talla';
+        $data['lo_details']           = $this->CommonModel->GetLandOwnerRowByFileNo($file_no);
+        $data['landDescription']      = $this->SanrachanaDetailsModel->getLandDetails($file_no);
+        $data['year']                 = $this->CommonModel->getData('settings_year');
+        $data['architectstructure']   = $this->CommonModel->getWhereAll('settings_architect_structure', array('fiscal_year'=>current_fiscal_year()));
+        $data['architecttype']        = $this->CommonModel->getWhereAll('settings_architect_type', array('fiscal_year'=>current_fiscal_year()));
+        $data['has_bill']             = check_tax_pax_for_current_fiscal_year($file_no, current_fiscal_year());
+        
+        $this->load->view('main', $data);
+    } else {
+        $this->session->set_flashdata('MSG_ACCESS','तपाईंको अनुमति अस्वीकृत गरिएको छ');
+        redirect('Dashboard');
+    }
+  }
+
+  //save new
+  public function SaveNew() {
+     if($this->input->is_ajax_request()) {
+        $file_no                                      = $this->input->post('ls_file_no');
+        $k_no                                         = $this->input->post('k_no');
+        $toal_land_area                               = $this->input->post('toal_land_area');
+        $total_land_area_sqft                         = $this->input->post('total_land_area_sqft');
+        $total_land_min_amount                        = $this->input->post('total_land_min_amount');
+        $total_land_tax_amoun                         = $this->input->post('total_land_tax_amount');
+        $sanrachana_n_no                              = $this->input->post('sanrachana_n_no');
+        $sanrachana_prakar                            = $this->input->post('sanrachana_prakar');
+        $sanrachana_banot_kisim                       = $this->input->post('sanrachana_banot_kisim');
+        $sanrachana_usages                            = $this->input->post('sanrachana_usages');
+        $sanrachana_floor                             = $this->input->post('sanrachana_floor');
+        $sanrachana_ground_lenth                      = $this->input->post('sanrachana_ground_lenth');
+        $sanrachana_ground_width                      = $this->input->post('sanrachana_ground_width');
+        $sanrachana_ground_area_sqft                  = $this->input->post('charcheko_area');
+        $charcheko_area                               = $this->input->post('charcheko_area');
+        $contructed_year                              = $this->input->post('contructed_year');
+        $sanrachana_dep_rate                          = $this->input->post('sanrachana_dep_rate');
+        $sanrachana_min_amount                        = $this->input->post('sanrachana_min_amount');
+        $sanrachana_kubul_amount                      = $this->input->post('sanrachana_kubul_amount');
+        $sanrachana_khud_amount                       = $this->input->post('sanrachana_khud_amount');
+        $sanrachana_ground_area_ropani                = $this->input->post('sanrachana_ground_area_ropani');
+        $sanrachana_land_tax_amount                   = $this->input->post('sanrachana_land_tax_amount');
+        $net_tax_amount                               = $this->input->post('net_tax_amount');
+        $ls_file_no                                   = $this->input->post('ls_file_no');
+        $r_bhumi_area                                 = $this->input->post('bhumi_kar_area');
+        $r_bhumi_kar                                  = $this->input->post('bhumi_kar_amount');
+        $is_feature                                   = $this->input->post('is_feature');
+        $sanrachan_total_floor                        = $this->input->post('sanrachan_total_floor');
+
+        $sanrachana_ground_area_sqft_by_floor         = $this->input->post('sanrachana_ground_area_sqft_by_floor');
+
+        $sanrachana_khud_amount_by_floor              = $this->input->post('sanrachana_khud_amount_by_floor');
+
+        $this->form_validation->set_rules('ls_file_no',     'साबिक गा.पा/न.पा', 'required');
+        $this->form_validation->set_rules('k_no',     'संरचना रहेको कि.नं', 'required');
+        $this->form_validation->set_rules('toal_land_area', 'संरचना रहेको जग्गाको क्षेत्रफल', 'required');
+        $this->form_validation->set_rules('total_land_area_sqft', 'जग्गाको क्षेत्रफल(वर्गफुट)', 'required');
+        $this->form_validation->set_rules('total_land_min_amount', 'जग्गाको कबुल गरेको मूल्य(प्रति रोपनी)', 'required');
+        $this->form_validation->set_rules('total_land_tax_amount', 'जग्गाको कर लाग्ने मुल्य', array('trim','required'));
+        $this->form_validation->set_rules('sanrachana_n_no', 'संरचना रहेको न.नं', array('trim','required'));
+        $this->form_validation->set_rules('sanrachana_prakar', 'संरचनाको प्रकार', array('trim','required'));
+        // $this->form_validation->set_rules('sanrachana_prakar', 'संरचनाको बनौटको किसिम', 'required|trim');
+        $this->form_validation->set_rules('sanrachana_banot_kisim', 'संरचनाको बनौटको किसिम', array('trim','required'));
+        $this->form_validation->set_rules('sanrachana_usages', 'संरचनाको तला', array('trim','required'));
+        $this->form_validation->set_rules('sanrachana_floor[]', 'संरचनाको तला ', array('trim','required'));
+       // $this->form_validation->set_rules('sanrachana_ground_lenth', 'कर लाग्ने मुल्य', array('trim','required'));
+        //$this->form_validation->set_rules('sanrachana_ground_width', 'कर लाग्ने मुल्य', array('trim','required'));
+        //$this->form_validation->set_rules('sanrachana_ground_area_sqft', 'संरचनाको क्षेत्रफल जम्मा वर्गफुट', array('trim','required'));
+        //$this->form_validation->set_rules('sanrachana_ground_housing_area_sqft', 'कर लाग्ने मुल्य', array('trim','required'));
+        $this->form_validation->set_rules('contructed_year', 'बनेको साल', array('trim','required'));
+        $this->form_validation->set_rules('sanrachana_dep_rate', 'संरचनाको ह्रासकट्टी प्रतिशत ', array('trim','required'));
+        $this->form_validation->set_rules('sanrachana_min_amount', 'संरचनाको तोकिएको न्युनतम मुल्य (प्रति व.फु. )', array('trim','required'));
+        $this->form_validation->set_rules('sanrachana_kubul_amount', 'संरचनाको खुद कायम मुल्य', array('trim','required'));
+        // $this->form_validation->set_rules('sanrachana_ground_area_ropani', 'प्लिन्थलेभलको क्षेत्रफल', array('trim','required'));
+        $this->form_validation->set_rules('charcheko_area', 'चर्चेकाे जग्गाको क्षेत्रफल )', array('trim','required'));
+        $this->form_validation->set_rules('sanrachana_land_tax_amount', 'संरचनाले चर्चेकाे जग्गाको कर लाग्ने मुल्य', array('trim','required'));
+        $this->form_validation->set_rules('net_tax_amount', 'सम्पति मूल्याङ्कन जम्मा मुल्य', array('trim','required'));
+        $this->form_validation->set_rules('ls_file_no', 'कर लाग्ने मुल्य', array('trim','required'));
+        $this->form_validation->set_rules('bhumi_kar_area', 'चर्चेकाे बाहेक भूमिकर जग्गाको क्षेत्रफल', array('trim','required'));
+        $this->form_validation->set_rules('bhumi_kar_amount', 'चर्चेकाे बाहेक जग्गाको भूमिकर मूल्याङ्कन', array('trim','required'));
+        if($this->form_validation->run() == false) {
+          $response = array(
+              'status'      => 'validation_error',
+              'message'     => '<div class="alert alert-danger">'.validation_errors().'</div>',
+          );
+          header("Content-type: application/json");
+          echo json_encode($response);
+          exit;
+         }
+        $post_array = array(
+          'k_no'                                    => $k_no,
+          'toal_land_area'                          => $toal_land_area,
+          'total_land_area_sqft'                    => $total_land_area_sqft,
+          'total_land_min_amount'                   => $total_land_min_amount,
+          'total_land_tax_amount'                   => $total_land_tax_amoun, 
+          'sanrachana_n_no'                         => $sanrachana_n_no, 
+          'sanrachana_prakar'                       => $sanrachana_prakar, 
+          'sanrachana_banot_kisim'                  => $sanrachana_banot_kisim, 
+          'sanrachana_usages'                       => $sanrachana_usages, 
+          'sanrachana_floor'                        => $sanrachan_total_floor,
+          'sanrachana_ground_lenth'                 => isset($sanrachana_ground_lenth) ? $sanrachana_ground_lenth :'',
+          'sanrachana_ground_width'                 => isset($sanrachana_ground_width) ? $sanrachana_ground_width : '',
+          'sanrachana_ground_area_sqft'             => $charcheko_area, 
+          'sanrachana_ground_housing_area_sqft'     => $charcheko_area, 
+          'contructed_year'                         => $contructed_year,
+          'sanrachana_dep_rate'                     => $sanrachana_dep_rate,
+          'sanrachana_min_amount'                   => $sanrachana_min_amount, 
+          'sanrachana_kubul_amount'                 => $sanrachana_kubul_amount, 
+          'sanrachana_khud_amount'                  => $sanrachana_khud_amount,
+          'sanrachana_ground_area_ropani'           => $charcheko_area/5476, 
+          'sanrachana_land_tax_amount'              => $sanrachana_land_tax_amount, 
+          'net_tax_amount'                          => $net_tax_amount, 
+          'ls_file_no'                              => $file_no, 
+          'added_on'                                => convertDate(date('Y-m-d')), 
+          'added_by'                                => $this->session->userdata('PRJ_USER_ID'), 
+          'modified_on'                             => '', 
+          'modified_by'                             => '', 
+          'r_bhumi_area'                            => $r_bhumi_area,
+          'r_bhumi_kar'                             => $r_bhumi_kar,
+          'is_feature'                              => $is_feature,
+          'fiscal_year'                             => current_fiscal_year(),
+        );
+        if(!empty($this->input->post('sanrachana_id'))) {
+          $update_details_pre = array('r_bhumi_area' => 0, 'r_bhumi_kar' => 0);
+          $this->CommonModel->updateData('sanrachana_details',$this->input->post('sanrachana_id'), $update_details_pre);
+        }
+        $result = $this->CommonModel->save('sanrachana_details',$post_array);
+        $child_details = array();
+        if($result) {
+          if(!empty($sanrachana_floor)) {
+            foreach($sanrachana_floor as $key => $child) {
+              $child_details[] = array(
+                'sanrachana_id' => $result,
+                'floor'         => $sanrachana_floor[$key],
+                'area'          => $sanrachana_ground_area_sqft_by_floor[$key],
+                'amount'        => $sanrachana_khud_amount_by_floor[$key]
+              );
+            }
+            $this->SanrachanaDetailsModel->saveFloorDetails($child_details);
+            //$this->CommonModel->updateData('sanrachana_details',$result, array('flag' => 1));
+          }
+
+          $response = array(
+                  'status'      => 'success',
+                  'data'         => "सफलतापूर्वक सम्मिलित गरियो",
+                  'message'     => 'redirect',
+                  'redirect_url' => base_url().'SanrachanaDetails/veiwDetails/'.$file_no,
+          );
+        header("Content-type: application/json");
+        echo json_encode($response);
+        exit;
+        // $this->session->set_flashdata('MSG_SUCCESS','प्रोफाइल सफलतापूर्वक सिर्जना गरियो
+        // ');
+        // redirect('LandDetails/AddLandDetails/'.$ld_file_no);
+        } else {
+        
+         $response = array(
+                  'status'      => 'fail',
+                  'data'         => "oops you got an error",
+          );
+          header("Content-type: application/json");
+          echo json_encode($response);
+          exit;
+        }
+      }
+  }
+
+  //view by floor
+  public function viewFloorDetails($sanrachana_id) {
+   if($this->authlibrary->HasModulePermission($this->module_code, "ADD")){
+      $id                           = $this->uri->segment(3);
+      $data['page']                 = 'edit_details_floor';
+      $data['row']                  = $this->CommonModel->getDataByID('sanrachana_details',$sanrachana_id);
+      $data['floor_details']        = $this->CommonModel->getWhereAll('floor_details',array('sanrachana_id' => $sanrachana_id));
+      
+      $data['lo_details']           = $this->CommonModel->GetLandOwnerRowByFileNo($data['row']['ls_file_no']);
+      $data['has_bill']             = check_tax_pax_for_current_fiscal_year( $data['row']['ls_file_no'] , current_fiscal_year());
+      $data['type_name']            = $this->CommonModel->getWhere('settings_architect_structure', array('id' => $data['row']['sanrachana_banot_kisim']));
+      $data['selected_ghartype']    = $this->CommonModel->getWhere('settings_architect_structure', array('structure_type' => $data['type_name']['structure_type'],'fiscal_year' => current_fiscal_year()));
+      $data['landDescription']      = $this->SanrachanaDetailsModel->getLandDetails($data['row']['ls_file_no']);
+      $data['year']                 = $this->CommonModel->getData('settings_year');
+      $data['architectstructure']   = $this->CommonModel->getWhereAll('settings_architect_structure', array('fiscal_year' => current_fiscal_year()));
+      $data['architecttype'] = $this->CommonModel->getWhereAll('settings_architect_type', array('fiscal_year' => current_fiscal_year()));
+      $this->load->view('main', $data);
+    } else {
+        $this->session->set_flashdata('MSG_ACCESS','तपाईंको अनुमति अस्वीकृत गरिएको छ');
+        redirect('Dashboard');
+    }
+  }
+
+  public function updateFloorDetails() {
+    if($this->input->is_ajax_request()) {
+        $id = $this->input->post('id');
+        $file_no                                      = $this->input->post('ls_file_no');
+        $k_no                                         = $this->input->post('k_no');
+        $toal_land_area                               = $this->input->post('toal_land_area');
+        $total_land_area_sqft                         = $this->input->post('total_land_area_sqft');
+        $total_land_min_amount                        = $this->input->post('total_land_min_amount');
+        $total_land_tax_amoun                         = $this->input->post('total_land_tax_amount');
+        $sanrachana_n_no                              = $this->input->post('sanrachana_n_no');
+        $sanrachana_prakar                            = $this->input->post('sanrachana_prakar');
+        $sanrachana_banot_kisim                       = $this->input->post('sanrachana_banot_kisim');
+        $sanrachana_usages                            = $this->input->post('sanrachana_usages');
+        $sanrachana_floor                             = $this->input->post('sanrachana_floor');
+        $sanrachana_ground_lenth                      = $this->input->post('sanrachana_ground_lenth');
+        $sanrachana_ground_width                      = $this->input->post('sanrachana_ground_width');
+        $sanrachana_ground_area_sqft                  = $this->input->post('charcheko_area');
+        $charcheko_area                               = $this->input->post('charcheko_area');
+        $contructed_year                              = $this->input->post('contructed_year');
+        $sanrachana_dep_rate                          = $this->input->post('sanrachana_dep_rate');
+        $sanrachana_min_amount                        = $this->input->post('sanrachana_min_amount');
+        $sanrachana_kubul_amount                      = $this->input->post('sanrachana_kubul_amount');
+        $sanrachana_khud_amount                       = $this->input->post('sanrachana_khud_amount');
+        $sanrachana_ground_area_ropani                = $this->input->post('sanrachana_ground_area_ropani');
+        $sanrachana_land_tax_amount                   = $this->input->post('sanrachana_land_tax_amount');
+        $net_tax_amount                               = $this->input->post('net_tax_amount');
+        $ls_file_no                                   = $this->input->post('ls_file_no');
+        $r_bhumi_area                                 = $this->input->post('bhumi_kar_area');
+        $r_bhumi_kar                                  = $this->input->post('bhumi_kar_amount');
+        $is_feature                                   = $this->input->post('is_feature');
+        
+        //new fields 
+        $sanrachan_total_floor                        = $this->input->post('sanrachan_total_floor');
+        $sanrachana_ground_area_sqft_by_floor         = $this->input->post('sanrachana_ground_area_sqft_by_floor');
+        $sanrachana_khud_amount_by_floor              = $this->input->post('sanrachana_khud_amount_by_floor');
+
+        $sanrachana_floor_new                    = $this->input->post('sanrachana_floor_new');
+        $sanrachana_ground_area_sqft_by_floor_new         = $this->input->post('sanrachana_ground_area_sqft_by_floor_new');
+        $sanrachana_khud_amount_by_floor_new              = $this->input->post('sanrachana_khud_amount_by_floor_new');
+
+        $this->form_validation->set_rules('ls_file_no',     'साबिक गा.पा/न.पा', 'required');
+        $this->form_validation->set_rules('k_no',     'संरचना रहेको कि.नं', 'required');
+        $this->form_validation->set_rules('toal_land_area', 'संरचना रहेको जग्गाको क्षेत्रफल', 'required');
+        $this->form_validation->set_rules('total_land_area_sqft', 'जग्गाको क्षेत्रफल(वर्गफुट)', 'required');
+        $this->form_validation->set_rules('total_land_min_amount', 'जग्गाको कबुल गरेको मूल्य(प्रति रोपनी)', 'required');
+        $this->form_validation->set_rules('total_land_tax_amount', 'जग्गाको कर लाग्ने मुल्य', array('trim','required'));
+        $this->form_validation->set_rules('sanrachana_n_no', 'संरचना रहेको न.नं', array('trim','required'));
+        $this->form_validation->set_rules('sanrachana_prakar', 'संरचनाको प्रकार', array('trim','required'));
+        // $this->form_validation->set_rules('sanrachana_prakar', 'संरचनाको बनौटको किसिम', 'required|trim');
+        $this->form_validation->set_rules('sanrachana_banot_kisim', 'संरचनाको बनौटको किसिम', array('trim','required'));
+        $this->form_validation->set_rules('sanrachana_usages', 'संरचनाको तला', array('trim','required'));
+        $this->form_validation->set_rules('sanrachana_floor[]', 'संरचनाको तला ', array('trim','required'));
+       // $this->form_validation->set_rules('sanrachana_ground_lenth', 'कर लाग्ने मुल्य', array('trim','required'));
+        //$this->form_validation->set_rules('sanrachana_ground_width', 'कर लाग्ने मुल्य', array('trim','required'));
+        //$this->form_validation->set_rules('sanrachana_ground_area_sqft', 'संरचनाको क्षेत्रफल जम्मा वर्गफुट', array('trim','required'));
+        //$this->form_validation->set_rules('sanrachana_ground_housing_area_sqft', 'कर लाग्ने मुल्य', array('trim','required'));
+        $this->form_validation->set_rules('contructed_year', 'बनेको साल', array('trim','required'));
+        $this->form_validation->set_rules('sanrachana_dep_rate', 'संरचनाको ह्रासकट्टी प्रतिशत ', array('trim','required'));
+        $this->form_validation->set_rules('sanrachana_min_amount', 'संरचनाको तोकिएको न्युनतम मुल्य (प्रति व.फु. )', array('trim','required'));
+        $this->form_validation->set_rules('sanrachana_kubul_amount', 'संरचनाको खुद कायम मुल्य', array('trim','required'));
+        // $this->form_validation->set_rules('sanrachana_ground_area_ropani', 'प्लिन्थलेभलको क्षेत्रफल', array('trim','required'));
+        $this->form_validation->set_rules('charcheko_area', 'चर्चेकाे जग्गाको क्षेत्रफल )', array('trim','required'));
+        $this->form_validation->set_rules('sanrachana_land_tax_amount', 'संरचनाले चर्चेकाे जग्गाको कर लाग्ने मुल्य', array('trim','required'));
+        $this->form_validation->set_rules('net_tax_amount', 'सम्पति मूल्याङ्कन जम्मा मुल्य', array('trim','required'));
+        $this->form_validation->set_rules('ls_file_no', 'कर लाग्ने मुल्य', array('trim','required'));
+        $this->form_validation->set_rules('bhumi_kar_area', 'चर्चेकाे बाहेक भूमिकर जग्गाको क्षेत्रफल', array('trim','required'));
+        $this->form_validation->set_rules('bhumi_kar_amount', 'चर्चेकाे बाहेक जग्गाको भूमिकर मूल्याङ्कन', array('trim','required'));
+        if($this->form_validation->run() == false) {
+          $response = array(
+              'status'      => 'validation_error',
+              'message'     => '<div class="alert alert-danger">'.validation_errors().'</div>',
+          );
+          header("Content-type: application/json");
+          echo json_encode($response);
+          exit;
+         }
+        $post_array = array(
+          'k_no'                                    => $k_no,
+          'toal_land_area'                          => $toal_land_area,
+          'total_land_area_sqft'                    => $total_land_area_sqft,
+          'total_land_min_amount'                   => $total_land_min_amount,
+          'total_land_tax_amount'                   => $total_land_tax_amoun, 
+          'sanrachana_n_no'                         => $sanrachana_n_no, 
+          'sanrachana_prakar'                       => $sanrachana_prakar, 
+          'sanrachana_banot_kisim'                  => $sanrachana_banot_kisim, 
+          'sanrachana_usages'                       => $sanrachana_usages, 
+          'sanrachana_floor'                        => $sanrachan_total_floor,
+          'sanrachana_ground_lenth'                 => isset($sanrachana_ground_lenth) ? $sanrachana_ground_lenth :'',
+          'sanrachana_ground_width'                 => isset($sanrachana_ground_width) ? $sanrachana_ground_width : '',
+          'sanrachana_ground_area_sqft'             => $charcheko_area, 
+          'sanrachana_ground_housing_area_sqft'     => $charcheko_area, 
+          'contructed_year'                         => $contructed_year,
+          'sanrachana_dep_rate'                     => $sanrachana_dep_rate,
+          'sanrachana_min_amount'                   => $sanrachana_min_amount, 
+          'sanrachana_kubul_amount'                 => $sanrachana_kubul_amount, 
+          'sanrachana_khud_amount'                  => $sanrachana_khud_amount,
+          'sanrachana_ground_area_ropani'           => $charcheko_area/5476, 
+          'sanrachana_land_tax_amount'              => $sanrachana_land_tax_amount, 
+          'net_tax_amount'                          => $net_tax_amount, 
+          'ls_file_no'                              => $file_no, 
+          'added_on'                                => convertDate(date('Y-m-d')), 
+          'added_by'                                => $this->session->userdata('PRJ_USER_ID'), 
+          'modified_on'                             => '', 
+          'modified_by'                             => '', 
+          'r_bhumi_area'                            => $r_bhumi_area,
+          'r_bhumi_kar'                             => $r_bhumi_kar,
+          'is_feature'                              => $is_feature,
+          'fiscal_year'                             => current_fiscal_year(),
+        );
+        //pp($post_array);
+        // if(!empty($this->input->post('sanrachana_id'))) {
+        //   $update_details_pre = array('r_bhumi_area' => 0, 'r_bhumi_kar' => 0);
+        //   $this->CommonModel->updateData('sanrachana_details',$this->input->post('sanrachana_id'), $update_details_pre);
+        // }
+        $result = $this->CommonModel->updateData('sanrachana_details',$id,$post_array);
+
+        $child_id       = $this->input->post('child_id');
+        $sanrachana_id  = $this->input->post('sanrachana_id');
+        $child_details  = array();
+        if($result) {
+          $child_details         = array();
+          if (!empty($sanrachana_floor)) {
+            foreach ($sanrachana_floor as $key => $floor) {
+               $child_details[] = array(
+                'id' => $child_id[$key],
+                'sanrachana_id' => $sanrachana_id[$key],
+                'floor'         => $sanrachana_floor[$key],
+                'area'          => $sanrachana_ground_area_sqft_by_floor[$key],
+                'amount'        => $sanrachana_khud_amount_by_floor[$key]
+              );
+            }
+            $this->SanrachanaDetailsModel->batchUpdate($child_id, $child_details);
+          }
+
+          if(!empty($sanrachana_floor_new)) {
+            $new_child_details = array();
+            foreach($sanrachana_floor_new as $key => $child) {
+              $new_child_details[] = array(
+                'sanrachana_id' => $id,
+                'floor'         => $sanrachana_floor_new[$key],
+                'area'          => $sanrachana_ground_area_sqft_by_floor_new[$key],
+                'amount'        => $sanrachana_khud_amount_by_floor_new[$key]
+              );
+            }
+            $this->SanrachanaDetailsModel->saveFloorDetails($new_child_details);
+          }
+
+          $response = array(
+                  'status'      => 'success',
+                  'data'         => "सफलतापूर्वक सम्मिलित गरियो",
+                  'message'     => 'redirect',
+                  'redirect_url' => base_url().'SanrachanaDetails/veiwDetails/'.$file_no,
+          );
+        header("Content-type: application/json");
+        echo json_encode($response);
+        exit;
+        // $this->session->set_flashdata('MSG_SUCCESS','प्रोफाइल सफलतापूर्वक सिर्जना गरियो
+        // ');
+        // redirect('LandDetails/AddLandDetails/'.$ld_file_no);
+        } else {
+        
+         $response = array(
+                  'status'      => 'fail',
+                  'data'         => "oops you got an error",
+          );
+          header("Content-type: application/json");
+          echo json_encode($response);
+          exit;
+        }
+      }
   }
 }//end of class
 

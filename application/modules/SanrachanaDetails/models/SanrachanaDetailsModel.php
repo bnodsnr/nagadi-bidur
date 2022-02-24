@@ -289,7 +289,6 @@ class SanrachanaDetailsModel extends CI_Model{
         $this->db->select('*')->from('sanrachana_details');
         $this->db->where_in('id',$ids);
         $query = $this->db->get();
-        //pp($this->db->last_query());
         return $query->result_array();
     }
 
@@ -299,41 +298,48 @@ class SanrachanaDetailsModel extends CI_Model{
         $this->db->where('added_ward','1');
         $this->db->where('fiscal_year',$fiscal_year);
         $result         = $this->db->get();
-        //pp($this->db->last_query());
         return $result->result_array();
     }
 
     public function updateBillingDetails($id, $post_array) {
-
         $this->db->trans_start();
-
         //$this->db->where('guid', $id);
-
         $this->db->update_batch('sanrachana_details',$post_array,'id');
-
         $this->db->trans_complete();
-
         // was there any update or error?
-
         if ($this->db->affected_rows() == '1') {
-
             return TRUE;
-
         } else {
-
-            // any trans error?
-
             if ($this->db->trans_status() === FALSE) {
-
                 return false;
-
             }
-
             return true;
-
         }
-
     }
+
+
+    public function saveFloorDetails($post_data) {
+    	$this->db->trans_start();
+    	$this->db->insert_batch('floor_details',$post_data);
+    	$this->db->trans_complete();        
+    	return ($this->db->trans_status() === FALSE)? FALSE:TRUE;
+    }
+
+    public function batchUpdate($id, $post_array) {
+        $this->db->trans_start();
+        $this->db->update_batch('floor_details', $post_array, 'id');
+        $this->db->trans_complete();
+        if ($this->db->affected_rows() > 0) {
+            return TRUE;
+        } else {
+            // any trans error?
+            if ($this->db->trans_status() === FALSE) {
+                return false;
+            }
+            return true;
+        }
+    }
+
 }//end of class
 
 ?>

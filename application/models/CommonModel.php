@@ -20,6 +20,18 @@ class CommonModel extends CI_Model {
 		$this->db->insert($table, $data);
 		return TRUE;
 	}
+
+    /**
+        * This function get land details with id reference.
+        * @param string $table , table name
+        * @param array $data, post data
+        * @return row array
+    */
+	public function save($table,$data)
+	{
+		$this->db->insert($table, $data);
+		return $this->db->insert_id();
+	}
 	
     /**
         * This fetch entries from given table
